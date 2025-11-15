@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Veterinaria - Inicio</title>
+    <!-- CSS básico opcional -->
+    <style>
+        body { font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 0; line-height: 1.5; }
+        header, footer { background:#f4f4f4; padding: 1rem; }
+        nav a { margin-right: 1rem; color:#0366d6; text-decoration: none; }
+        main { padding: 1rem; }
+        .container { max-width: 960px; margin: 0 auto; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Veterinaria</h1>
+            <nav>
+                <a href="#">Inicio</a>
+                <a href="#">Servicios</a>
+                <a href="#">Equipo</a>
+                <a href="#">Contacto</a>
+                <a href="#">Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <section>
+                <h2>Bienvenido</h2>
+                <p>Esta es la página principal. Reemplaza este contenido por el de tu proyecto.</p>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <small>&copy; <!-- año dinámico --> <span id="year"></span> Veterinaria. Todos los derechos reservados.</small>
+        </div>
+    </footer>
+
+    <script>
+        // Coloca el año actual en el footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
