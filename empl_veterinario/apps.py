@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class VeterinarioConfig(AppConfig):
+class EmplVeterinarioConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'veterinario'
+    name = 'empl_veterinario'
