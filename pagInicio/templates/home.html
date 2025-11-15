@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clínica Veterinaria</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0d7e56 0%, #1a9c6f 50%, #0d7e56 100%);
+            border: 8px solid #7b4ba6;
+            padding: 40px;
+            overflow: hidden;
+        }
+
+        /* Decoraciones de fondo */
+        .decoration {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .decoration-1 {
+            width: 400px;
+            height: 400px;
+            top: -100px;
+            right: -50px;
+            background: rgba(173, 216, 230, 0.3);
+        }
+
+        .decoration-2 {
+            width: 300px;
+            height: 300px;
+            bottom: -50px;
+            right: 100px;
+            background: rgba(173, 216, 230, 0.25);
+        }
+
+        .decoration-3 {
+            width: 200px;
+            height: 200px;
+            top: 50%;
+            right: 50px;
+            background: rgba(173, 216, 230, 0.2);
+        }
+
+        /* Líneas decorativas curvas */
+        .curve-line {
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: white;
+            opacity: 0.3;
+        }
+
+        .curve-1 {
+            top: 30px;
+            transform: rotate(-5deg);
+        }
+
+        .curve-2 {
+            top: 180px;
+            width: 70%;
+            right: 0;
+            border-radius: 50% 0 0 50%;
+        }
+
+        /* Header con logo */
+        .header {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-container {
+            background: white;
+            padding: 20px 40px;
+            border-radius: 15px;
+            border: 4px solid #7b4ba6;
+            display: inline-block;
+            position: relative;
+        }
+
+        .logo-text {
+            text-align: left;
+        }
+
+        .logo-clinica {
+            font-size: 72px;
+            font-weight: bold;
+            color: #9b6fc9;
+            text-shadow: 3px 3px 0px rgba(0,0,0,0.1);
+            letter-spacing: -2px;
+            line-height: 0.9;
+        }
+
+        .logo-veterinaria {
+            font-size: 68px;
+            font-weight: bold;
+            color: #f5a623;
+            text-shadow: 
+                -2px -2px 0 #fff,
+                2px -2px 0 #fff,
+                -2px 2px 0 #fff,
+                2px 2px 0 #fff,
+                3px 3px 0px rgba(0,0,0,0.1);
+            letter-spacing: -1px;
+            margin-top: -10px;
+        }
+
+        .paw-icon {
+            position: absolute;
+            top: 20px;
+            right: -40px;
+            font-size: 50px;
+            color: white;
+        }
+
+        /* Botones del menú */
+        .menu-buttons {
+            position: absolute;
+            right: 80px;
+            top: 120px;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .menu-btn {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 18px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            color: #5bc0be;
+            font-size: 32px;
+            font-weight: bold;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .menu-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+        }
+
+        .btn-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 28px;
+        }
+
+        .btn-registrar .btn-icon {
+            background: #f5e694;
+            color: white;
+        }
+
+        .btn-consultar .btn-icon {
+            background: #c49bdb;
+            color: white;
+        }
+
+        .btn-agendar .btn-icon {
+            background: #f5a623;
+            color: white;
+        }
+
+        /* Símbolos decorativos */
+        .plus-symbol {
+            position: absolute;
+            color: white;
+            font-size: 60px;
+            font-weight: 300;
+            opacity: 0.4;
+        }
+
+        .plus-1 {
+            top: 80px;
+            right: 120px;
+        }
+
+        .plus-2 {
+            bottom: 150px;
+            right: 200px;
+        }
+
+        /* Información de contacto */
+        .contact-info {
+            position: absolute;
+            bottom: 80px;
+            left: 80px;
+            z-index: 10;
+            color: white;
+        }
+
+        .emergency-service {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .emergency-icon {
+            font-size: 40px;
+        }
+
+        .contact-details {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-left: 55px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 20px;
+        }
+
+        .contact-icon {
+            width: 30px;
+            height: 30px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Decoraciones de fondo -->
+        <div class="decoration decoration-1"></div>
+        <div class="decoration decoration-2"></div>
+        <div class="decoration decoration-3"></div>
+        <div class="curve-line curve-1"></div>
+        <div class="curve-line curve-2"></div>
+
+        <!-- Símbolos decorativos -->
+        <div class="plus-symbol plus-1">+</div>
+        <div class="plus-symbol plus-2">+</div>
+
+        <!-- Header con logo -->
+        <div class="header">
+            <div class="logo-container">
+                <div class="logo-text">
+                    <div class="logo-clinica">Clínica</div>
+                    <div class="logo-veterinaria">Veterinaria</div>
+                </div>
+                <div class="paw-icon">🐾</div>
+            </div>
+        </div>
+
+        <!-- Botones del menú -->
+        <div class="menu-buttons">
+            <a href="#" class="menu-btn btn-registrar">
+                <div class="btn-icon">+</div>
+                Registrar
+            </a>
+            <a href="#" class="menu-btn btn-consultar">
+                <div class="btn-icon">🔍</div>
+                Consultar
+            </a>
+            <a href="#" class="menu-btn btn-agendar">
+                <div class="btn-icon">📅</div>
+                Agendar
+            </a>
+        </div>
+
+        <!-- Información de contacto -->
+        <div class="contact-info">
+            <div class="emergency-service">
+                <span class="emergency-icon">⚡</span>
+                Servicio de emergencia
+            </div>
+            <div class="contact-details">
+                <div class="contact-item">
+                    <div class="contact-icon">📞</div>
+                    <span>+57 300 7821853</span>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">📍</div>
+                    <span>Barrio pobre pobre doblando a la derecha</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
