@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'historial_de_vacunas',
     'mascota',
     'tratamiento',
+    'login',
 ]
 
 MIDDLEWARE = [
