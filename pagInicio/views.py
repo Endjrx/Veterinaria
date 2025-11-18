@@ -3,5 +3,5 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='home-login')
 def home(request):
-    return render(request, 'pagInicio/home.html')
+    return render(request, 'pagInicio/vet_dashboard.html')
 
