@@ -1,0 +1,186 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Left Side - Login Form */
+.left-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    background-color: #f5f5f5;
+    position: relative;
+}
+
+.login-form {
+    width: 100%;
+    max-width: 500px;
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 900;
+    margin-bottom: 60px;
+    color: #1a1a1a;
+}
+
+.input-group {
+    margin-bottom: 35px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 20px;
+    color: #666;
+    font-size: 24px;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 18px 20px 18px 20px;
+    border: 2px solid #999;
+    border-radius: 15px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+    height: 45px;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: #1a8754;
+}
+
+input::placeholder {
+    color: #9e7b7b;
+    font-weight: 500;
+}
+
+.remember-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    margin-left: 10px;
+}
+
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+    cursor: pointer;
+    accent-color: #6b5b95;
+}
+
+.remember-group label {
+    color: #9e7b7b;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.login-button {
+    width: 80%;
+    padding: 12px;
+    background-color: #1a8754;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: block;
+    margin: 0 auto 20px;
+    height: 50px;
+}
+
+.login-button:hover {
+    background-color: #156b43;
+}
+
+.forgot-password {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.forgot-password a {
+    color: #1a1a1a;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}
+
+.pawRightSide {
+    position: absolute;
+    top: -10px;
+    right: 0;
+    width: 180px;
+    height: auto;
+    transform: rotate(-25deg);
+}
+
+.illustrationRightSide {
+    position: absolute;
+    top: 375px;
+    left: 90px;
+    width: 450px;
+    height: auto;
+}
+
+.pawLeftSide {
+    position: absolute;
+    bottom: 0px;
+    width: 180px;
+    height: auto;
+    left: 0px;
+    transform: rotate(20deg);
+}
+
+/* Right Side - Green Panel */
+.right-side {
+    width: 38%;
+    background-color: #1a8754;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 60px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .right-side {
+        display: none;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }
+}

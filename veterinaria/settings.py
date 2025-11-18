@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'mascota',
     'tratamiento',
     'login',
+    'pagInicio',
 ]
 
 MIDDLEWARE = [

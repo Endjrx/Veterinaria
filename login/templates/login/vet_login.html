@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veterinary Login</title>
+    <link rel="stylesheet" href="{% static 'login/css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <!-- Left Side - Login Form -->
+        <div class="left-side">
+
+            <div class="login-form">
+                <h1>Welcome Back!!</h1>
+                
+                <form method="POST" action="{% url 'home-login' %}">
+
+                    {% csrf_token %}
+
+                    <div class="input-group">
+                        <input type="text" name="username" placeholder="Username">
+                    </div>
+
+                    <div class="input-group">
+                        <input type="password" name = "password_user" placeholder="Password">
+                    </div>
+
+                    <div class="remember-group">
+                        <input type="checkbox" id="remember" checked>
+                        <label for="remember">Remember</label>
+                    </div>
+
+                    <button type="submit" class="login-button">Login</button>
+                    
+                    {% if messages %}
+                        {% for message in messages %}
+                            <p class="error">{{ message }}</p>
+                        {% endfor %}
+                    {% endif %}
+
+                </form>
+
+                <div class="forgot-password">
+                    <a href="#">Forgot your password ?</a>
+                </div>
+            </div>
+            <img src="{%static 'login/imgs/huella.png'%}" class="pawLeftSide">
+
+        </div>
+
+        <!-- Right Side - Green Panel with Illustration -->
+        <div class="right-side">
+            <img src="{%static 'login/imgs/huella.png'%}" class="pawRightSide">
+           <img src="{%static 'login/imgs/illustration_vet.png'%}" class="illustrationRightSide">
+        </div>
+    </div>
+</body>
+</html>x
