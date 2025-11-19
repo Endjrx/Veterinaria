@@ -9,16 +9,25 @@ menuItems.forEach(item => {
         // Cambiamos el contenido según la opción
         switch(opcion){
             case 'dashboard':
-                contenido.innerHTML = `
-                    <h2>Dashboard</h2>
-                    <p>¡Bienvenida de nuevo, {{ request.user.first_name }} {{ request.user.last_name }} 👋</p>
+                contenido.innerHTML = ` 
+
                 `;
                 break;
+
             case 'registrar':
-                contenido.innerHTML = `<h2>Registrar</h2><p>Contenido de la opción Registrar...</p>`;
+                contenido.innerHTML = `
+
+                `;
                 break;
+                
             case 'agendar':
-                contenido.innerHTML = `<h2>Agendar</h2><p>Contenido de la opción Agendar...</p>`;
+                contenido.innerHTML = `
+
+                    <div class="seccion-agendarJS">
+                        <h1> Hola mi gente</h1>
+                    </div>
+
+                `;
                 break;
             case 'consultar':
                 contenido.innerHTML = `<h2>Consultar</h2><p>Contenido de la opción Consultar...</p>`;
