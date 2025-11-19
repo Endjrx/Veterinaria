@@ -95,53 +95,37 @@
             <!-- Appointments Section -->
             <div class="appointments-section">
                 <h3 class="section-title">📅 Citas de Hoy</h3>
-                
-                <div class="appointment-item">
-                    <div class="appointment-info">
-                        <div class="appointment-time">09:00 AM</div>
-                        <div class="appointment-pet">🐕 Max - Consulta General</div>
-                        <div class="appointment-owner">Dueño: Juan Pérez</div>
-                    </div>
-                    <span class="appointment-status status-confirmed">Confirmada</span>
-                </div>
-                
-                <div class="appointment-item">
-                    <div class="appointment-info">
-                        <div class="appointment-time">10:30 AM</div>
-                        <div class="appointment-pet">🐈 Luna - Vacunación</div>
-                        <div class="appointment-owner">Dueño: Ana Martínez</div>
-                    </div>
-                    <span class="appointment-status status-pending">Pendiente</span>
-                </div>
-                
-                <div class="appointment-item">
-                    <div class="appointment-info">
-                        <div class="appointment-time">11:45 AM</div>
-                        <div class="appointment-pet">🐕 Rocky - Control Post-operatorio</div>
-                        <div class="appointment-owner">Dueño: Carlos Rodríguez</div>
-                    </div>
-                    <span class="appointment-status status-confirmed">Confirmada</span>
-                </div>
-                
-                <div class="appointment-item">
-                    <div class="appointment-info">
-                        <div class="appointment-time">02:00 PM</div>
-                        <div class="appointment-pet">🐇 Copito - Revisión Dental</div>
-                        <div class="appointment-owner">Dueño: Laura Sánchez</div>
-                    </div>
-                    <span class="appointment-status status-pending">Pendiente</span>
-                </div>
-                
-                <div class="appointment-item">
-                    <div class="appointment-info">
-                        <div class="appointment-time">04:30 PM</div>
-                        <div class="appointment-pet">🐕 Toby - Desparasitación</div>
-                        <div class="appointment-owner">Dueño: Miguel Torres</div>
-                    </div>
-                    <span class="appointment-status status-confirmed">Confirmada</span>
-                </div>
+
+                {% if citas %}
+                    {% for cita in citas %}
+                        <div class="appointment-item">
+                        <div class="appointment-info">
+                            <div class="appointment-time">
+                                {{ cita.Hora|time:"h:i A" }}
+                            </div>
+
+                            <div class="appointment-pet">
+                                🐾 {{ cita.FK_IdMascota.Nombre }} - {{ cita.Motivo }}
+                            </div>
+
+                            <div class="appointment-owner">
+                                Dueño: {{ cita.FK_IdMascota.FK_IdCliente.Nombre }} {{ cita.FK_IdMascota.FK_IdCliente.Apellido }}
+                            </div>
+                        </div>
+
+                        {% if cita.Estado == "Programada" %}
+                            <span class="appointment-status status-confirmed">Programada</span>
+                        {% else %}
+                            <span class="appointment-status status-pending">Pendiente</span>
+                        {% endif %}
+
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay citas para hoy.</p>
+                {% endif %}
             </div>
-        </div>
+
     </div>
-</body>
+</body> 
 </html>
