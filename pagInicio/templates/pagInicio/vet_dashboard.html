@@ -96,24 +96,30 @@
                         <div class="appointment-item">
                         <div class="appointment-info">
                             <div class="appointment-time">
-                                {{ cita.Hora|time:"h:i A" }}
+                                {{ cita.hora|time:"h:i A" }}
                             </div>
 
                             <div class="appointment-pet">
-                                🐾 {{ cita.FK_IdMascota.Nombre }} - {{ cita.Motivo }}
+                                🐾 {{ cita.id_mascota.nombre }} - {{ cita.motivo }}
                             </div>
 
                             <div class="appointment-owner">
-                                Dueño: {{ cita.FK_IdMascota.FK_IdCliente.Nombre }} {{ cita.FK_IdMascota.FK_IdCliente.Apellido }}
+                                Dueño: {{ cita.mascota_id.cliente_id.nombre }} {{ cita.mascota_id.cliente_id.apellido }}
                             </div>
                         </div>
 
-                        {% if cita.Estado == "Programada" %}
-                            <span class="appointment-status status-confirmed">Programada</span>
+                        {% if cita.estado == "Programada" %}
+                            <span class="appointment-status status-scheduled">Programada</span>
+                        {% elif cita.estado == "Confirmada" %}
+                            <span class="appointment-status status-confirmed">Confirmada</span> 
+                        {% elif cita.estado == "Cancelada" %}
+                            <span class="appointment-status status-cancelled">Cancelada</span>
+                        {% elif cita.estado == "Atendida" %}
+                            <span class="appointment-status status-attended">Atendida</span>
                         {% else %}
                             <span class="appointment-status status-pending">Pendiente</span>
                         {% endif %}
-
+                        
                         </div>
                     {% endfor %}
                 {% else %}

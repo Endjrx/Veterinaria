@@ -230,6 +230,11 @@ body {
     color: #155724;
 }
 
+.status-scheduled {
+    background: #d4edda;
+    color: #155724;
+}
+
 .btn-action {
     background: #1a8754;
     color: white;
