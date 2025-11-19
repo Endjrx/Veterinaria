@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'tratamiento',
     'login',
     'pagInicio',
+    'pagRegister',
 ]
 
 MIDDLEWARE = [
