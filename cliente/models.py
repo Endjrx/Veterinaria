@@ -2,13 +2,19 @@ from django.db import models
 
 # Create your models here.
 class Cliente(models.Model):
+
+    ESTADOS = [
+        ('Activo', 'Activo'),
+        ('Inactivo', 'Inactivo'),
+    ]
     
-    PK_IdCliente = models.IntegerField(primary_key=True, db_column='PK_IdCliente')
-    Nombre = models.CharField(max_length=50, db_column='Nombre')
-    Apellido = models.CharField(max_length=50, db_column='Apellido')
-    Telefono = models.CharField(max_length=20, db_column='Telefono')
-    Direccion = models.CharField(max_length=150, db_column='Direccion')
-    E_Mail = models.CharField(max_length=100, db_column='E-Mail')
+    id_cliente = models.BigAutoField(primary_key=True, db_column='id_cliente')
+    nombre = models.CharField(max_length=50, db_column='nombre')
+    apellido = models.CharField(max_length=50, db_column='apellido')
+    telefono = models.CharField(max_length=20, db_column='telefono')
+    direccion = models.CharField(max_length=150, db_column='direccion')
+    email = models.CharField(max_length=100, db_column='email')
+    estado = models.CharField(max_length=20, choices=ESTADOS, db_column='estado')
 
     class Meta:
-        db_table = 'Cliente'
+        db_table = 'cliente'

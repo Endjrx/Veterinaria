@@ -34,11 +34,13 @@
 
                     <button type="submit" class="login-button">Login</button>
 
-                    {% if messages %}
-                        {% for message in messages %}
-                            <p style="color:red;">{{ message }}</p>
-                        {% endfor %}
-                    {% endif %}
+                    <div class="contenedor-mensaje">
+                        {% if messages %}
+                            {% for message in messages %}
+                                <p class="credencialesErroneas">{{ message }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
 
                 </form>
 
@@ -57,4 +59,4 @@
         </div>
     </div>
 </body>
-</html>x
+</html>
