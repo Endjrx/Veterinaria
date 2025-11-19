@@ -65,14 +65,14 @@
         <div class="main-content">
             <div class="welcome-section">
                 <h2>¡Bienvenida de nuevo, {{ request.user.first_name }} {{ request.user.last_name }}👋</h2>
-                <p style="color: #666;">Hay {{ total_citas }} citas programadas para hoy</p>
+                <p style="color: #666;">Hay {{ total_citas_hoy }} citas programadas para hoy</p>
             </div>
             
             <!-- Stats Grid Estadisticas principal--> 
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-label">Citas Hoy</div>
-                    <div class="stat-number">{{ total_citas }}</div>
+                    <div class="stat-number">{{ total_citas_hoy }}</div>
                     <button class="btn-action">Ver todas</button>
                 </div>
                 <div class="stat-card orange">
@@ -80,14 +80,9 @@
                     <div class="stat-number" style="color: #ff9800;">{{ total_clientes_activos }}</div>
                     <button class="btn-action">Consultar</button>
                 </div>
-                <div class="stat-card blue">
-                    <div class="stat-label">Vacunas Pendientes</div>
-                    <div class="stat-number" style="color: #2196f3;">12</div>
-                    <button class="btn-action">Ver lista</button>
-                </div>
                 <div class="stat-card purple">
-                    <div class="stat-label">Cirugías del Mes</div>
-                    <div class="stat-number" style="color: #9c27b0;">18</div>
+                    <div class="stat-label">Total Citas</div>
+                    <div class="stat-number" style="color: #9c27b0;">{{ total_citas }}</div>
                     <button class="btn-action">Detalles</button>
                 </div>
             </div>
