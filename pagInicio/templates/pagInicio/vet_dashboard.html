@@ -23,7 +23,7 @@
             <div class="notification-badge">3</div>
             <span>🔔</span>
             <span style="margin: 0 15px;">|</span>
-            <span>👤 Dr. María González</span>
+            <span>👤 {{ request.user.first_name }} {{ request.user.last_name }}!</span>
         </div>
     </div>
     
@@ -64,20 +64,20 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="welcome-section">
-                <h2>¡Bienvenida de nuevo, Dra. María! 👋</h2>
-                <p style="color: #666;">Tienes 5 citas programadas para hoy</p>
+                <h2>¡Bienvenida de nuevo, {{ request.user.first_name }} {{ request.user.last_name }}👋</h2>
+                <p style="color: #666;">Hay {{ total_citas }} citas programadas para hoy</p>
             </div>
             
             <!-- Stats Grid Estadisticas principal--> 
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-label">Citas Hoy</div>
-                    <div class="stat-number">5</div>
+                    <div class="stat-number">{{ total_citas }}</div>
                     <button class="btn-action">Ver todas</button>
                 </div>
                 <div class="stat-card orange">
                     <div class="stat-label">Pacientes Activos</div>
-                    <div class="stat-number" style="color: #ff9800;">248</div>
+                    <div class="stat-number" style="color: #ff9800;">{{ total_clientes_activos }}</div>
                     <button class="btn-action">Consultar</button>
                 </div>
                 <div class="stat-card blue">
