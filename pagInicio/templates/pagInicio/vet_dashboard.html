@@ -66,7 +66,9 @@
         <!-- Main Content -->
         <div class="main-content">
 
-            <div id="contenido-dinamico">
+            <div id="contenido-dinamico"> </div>
+            <template id="template-dashboard">
+                
                 <div class="welcome-section">
                     <h2>¡Bienvenida de nuevo, {{ request.user.first_name }} {{ request.user.last_name }}👋</h2>
                     <p style="color: #666;">Hay {{ total_citas_hoy }} citas programadas para hoy</p>
@@ -130,7 +132,7 @@
                         <p>No hay citas para hoy.</p>
                     {% endif %}
                 </div>
-            </div>
+            </template>
         </div>
 
         <script src="{% static 'pagInicio/js/scripts.js' %}"></script>

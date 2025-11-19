@@ -17,3 +17,9 @@ def home(request):
         'total_citas': contador_citas,
         'citas': cita
     })
+
+
+
+
+
+
