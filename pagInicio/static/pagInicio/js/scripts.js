@@ -1,50 +1,55 @@
-// Seleccionamos todos los items de la sidebar
-const menuItems = document.querySelectorAll('.sidebar .menu-item');
+// Seleccionar todos los botones del sidebar
+const botones = document.querySelectorAll(".menu-item");
 
-menuItems.forEach(item => {
-    item.addEventListener('click', function() {
-        const opcion = this.getAttribute('data-opcion'); // obtenemos la opción
-        const contenido = document.getElementById('contenido-dinamico');
+// Contenedor donde se actualizará el contenido
+const contenedor = document.getElementById("contenido-dinamico");
 
-        // Cambiamos el contenido según la opción
-        switch(opcion){
-            case 'dashboard':
-                contenido.innerHTML = ` 
+// Plantillas HTML para cada sección
+const secciones = {
+    dashboard: `
+        <h2>Dashboard</h2>
+        <p>Bienvenido al panel principal.</p>
+    `,
+    registrar: `
+        <h2>Registrar</h2>
+        <p>Formulario de registro próximamente...</p>
+    `,
+    agendar: `
+        <h2>Agendar</h2>
+        <p>Agenda tus citas aquí.</p>
+    `,
+    consultar: `
+        <h2>Consultar</h2>
+        <p>Consulta la información registrada.</p>
+    `,
+    vacunacion: `
+        <h2>Vacunación</h2>
+        <p>Control de vacunas.</p>
+    `,
+    reportes: `
+        <h2>Reportes</h2>
+        <p>Informes y reportes del sistema.</p>
+    `,
+    configuracion: `
+        <h2>Configuración</h2>
+        <p>Ajustes del sistema.</p>
+    `
+};
 
-                `;
-                break;
+// Evento para cada botón del menú
+botones.forEach(boton => {
+    boton.addEventListener("click", () => {
 
-            case 'registrar':
-                contenido.innerHTML = `
+        // 1. Quitar clase active a todos
+        botones.forEach(b => b.classList.remove("active"));
 
-                `;
-                break;
-                
-            case 'agendar':
-                contenido.innerHTML = `
+        // 2. Activar el botón tocado
+        boton.classList.add("active");
 
-                    <div class="seccion-agendarJS">
-                        <h1> Hola mi gente</h1>
-                    </div>
+        // 3. Obtener la sección seleccionada
+        const section = boton.getAttribute("data-section");
 
-                `;
-                break;
-            case 'consultar':
-                contenido.innerHTML = `<h2>Consultar</h2><p>Contenido de la opción Consultar...</p>`;
-                break;
-            case 'vacunacion':
-                contenido.innerHTML = `<h2>Vacunación</h2><p>Contenido de la opción Vacunación...</p>`;
-                break;
-            case 'reportes':
-                contenido.innerHTML = `<h2>Reportes</h2><p>Contenido de la opción Reportes...</p>`;
-                break;
-            case 'configuracion':
-                contenido.innerHTML = `<h2>Configuración</h2><p>Contenido de la opción Configuración...</p>`;
-                break;
-        }
-
-        // Actualizamos la clase "active"
-        menuItems.forEach(i => i.classList.remove('active'));
-        this.classList.add('active');
+        // 4. Actualizar contenido
+        contenedor.innerHTML = secciones[section];
     });
 });
