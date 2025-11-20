@@ -21,10 +21,5 @@ urlpatterns = [
     path('', include ('login.urls')),
     path('admin/', admin.site.urls),
     path('inicio/',include('pagInicio.urls')),
-<<<<<<< HEAD
-    path('register/', include('pagRegister.urls')),
-    path('consultar/', include('pagConsultar.urls')),
-=======
->>>>>>> 9876980fbc77d36d65d642481693dc32492f8d2c
 ]
 
