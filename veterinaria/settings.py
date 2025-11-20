@@ -87,12 +87,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',   # 🔹 Motor de base de datos
         'NAME': 'veterinaria',                # 🔹 Nombre de la base que creaste
-        'USER': 'endjrx',                        # 🔹 Usuario de MySQL
-        'PASSWORD': '12345',      # 🔹 Contraseña de MySQL
-        'HOST': '127.0.0.1',                   # 🔹 Servidor local
+        'USER': 'Endys',                        # 🔹 Usuario de MySQL
+        'PASSWORD': 'Endys12345#',      # 🔹 Contraseña de MySQL
+        'HOST': '72.61.11.232',                   # 🔹 Servidor local
         'PORT': '3306',                        # 🔹 Puerto por defecto de MySQL
         'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+            'charset': 'utf8mb4',
         }
     }
 }

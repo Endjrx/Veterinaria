@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from cita.models import Cita
 from cliente.models import Cliente
+
 from datetime import date
 
 @login_required(login_url='home-login')
@@ -17,7 +18,6 @@ def home(request):
         'total_citas': contador_citas,
         'citas': cita
     })
-
 
 
 

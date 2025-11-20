@@ -14,7 +14,7 @@ class Cliente(models.Model):
     telefono = models.CharField(max_length=20, db_column='telefono')
     direccion = models.CharField(max_length=150, db_column='direccion')
     email = models.CharField(max_length=100, db_column='email')
-    estado = models.CharField(max_length=20, choices=ESTADOS, db_column='estado')
+    estado = models.CharField(max_length=20, choices=ESTADOS, default='Activo', db_column='estado')
 
     class Meta:
         db_table = 'cliente'

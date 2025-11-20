@@ -7,11 +7,10 @@ const contenedor = document.getElementById("contenido-dinamico");
 // cargamos el Dashboard desde el template sin duplicarlo
 const dashboard_template = document.getElementById("template-dashboard").innerHTML;
 
-// Plantillas HTML para cada sección
+// Plantillas HTML para cada sección para que se actualice dinamicamente cuando presiono una opcion en el sidebar
 const secciones = {
     dashboard: dashboard_template,
     registrar: `
-        
 
         <div class="main-contentRegistrar">
             <div class="header">
