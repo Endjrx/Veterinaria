@@ -3,10 +3,10 @@ from django.db import models
 # Create your models here.
 class Empleado(models.Model):
 
-    PK_IdEmpleado = models.IntegerField (primary_key=True, db_column='PK_IdEmpleado')
-    Nombre = models.CharField (max_length=50, db_column='Nombre')
-    Apellido = models.CharField (max_length=50, db_column='Apellido')
-    Telefono = models.CharField(max_length=20, db_column='Telefono')
+    id_empleado = models.BigAutoField (primary_key=True, db_column='id_empleado')
+    nombre = models.CharField (max_length=50, db_column='nombre')
+    apellido = models.CharField (max_length=50, db_column='apellido')
+    telefono = models.CharField(max_length=20, db_column='telefono')
 
     class Meta:
-        db_table = 'Empleado'  
+        db_table = 'empleado'  

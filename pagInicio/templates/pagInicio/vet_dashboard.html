@@ -1,12 +1,14 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Veterinaria</title>
     <link rel="stylesheet" href="{% static 'pagInicio/css/styles.css' %}">
 </head>
+
 <body>
     <!-- Header -->
     <div class="header">
@@ -26,122 +28,114 @@
             <span>👤 {{ request.user.first_name }} {{ request.user.last_name }}!</span>
         </div>
     </div>
-    
+
     <!-- Main Container -->
     <div class="container">
         <!-- Sidebar -->
         <div class="sidebar">
-            <div class="menu-item active">
+            <button class="menu-item active" data-section="dashboard">
                 <span class="menu-icon">🏠</span>
                 <span>Dashboard</span>
-            </div>
-            <div class="menu-item">
+            </button>
+            <button class="menu-item" data-section="registrar">
                 <span class="menu-icon">📋</span>
                 <span>Registrar</span>
-            </div>
-            <div class="menu-item">
+            </button>
+            <button class="menu-item " data-section="agendar">
                 <span class="menu-icon">📅</span>
                 <span>Agendar</span>
-            </div>
-            <div class="menu-item">
+            </button>
+            <button class="menu-item" data-section="consultar">
                 <span class="menu-icon">🔍</span>
                 <span>Consultar</span>
-            </div>
-            <div class="menu-item">
+            </button>
+            <button class="menu-item" data-section="vacunacion">
                 <span class="menu-icon">💉</span>
                 <span>Vacunación</span>
-            </div>
-            <div class="menu-item">
+            </button>
+            <button class="menu-item" data-section="reportes">
                 <span class="menu-icon">📊</span>
                 <span>Reportes</span>
-            </div>
-            <div class="menu-item">
+            </button>
+            <button class="menu-item" data-section="configuracion">
                 <span class="menu-icon">⚙️</span>
                 <span>Configuración</span>
-            </div>
+            </button>
         </div>
-        
+
         <!-- Main Content -->
         <div class="main-content">
-            <div class="welcome-section">
-                <h2>¡Bienvenida de nuevo, {{ request.user.first_name }} {{ request.user.last_name }}👋</h2>
-                <p style="color: #666;">Hay {{ total_citas }} citas programadas para hoy</p>
-            </div>
-            
-            <!-- Stats Grid Estadisticas principal--> 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Citas Hoy</div>
-                    <div class="stat-number">{{ total_citas }}</div>
-                    <button class="btn-action">Ver todas</button>
-                </div>
-                <div class="stat-card orange">
-                    <div class="stat-label">Pacientes Activos</div>
-                    <div class="stat-number" style="color: #ff9800;">{{ total_clientes_activos }}</div>
-                    <button class="btn-action">Consultar</button>
-                </div>
-                <div class="stat-card blue">
-                    <div class="stat-label">Vacunas Pendientes</div>
-                    <div class="stat-number" style="color: #2196f3;">12</div>
-                    <button class="btn-action">Ver lista</button>
-                </div>
-                <div class="stat-card purple">
-                    <div class="stat-label">Cirugías del Mes</div>
-                    <div class="stat-number" style="color: #9c27b0;">18</div>
-                    <button class="btn-action">Detalles</button>
-                </div>
-            </div>
-            
-            <!-- Appointments Section -->
-            <div class="appointments-section">
-                <h3 class="section-title">📅 Citas de Hoy</h3>
+
+            <div id="contenido-dinamico"> </div>
+            <template id="template-dashboard">
                 
-                <div class="appointment-item">
-                    <div class="appointment-info">
-                        <div class="appointment-time">09:00 AM</div>
-                        <div class="appointment-pet">🐕 Max - Consulta General</div>
-                        <div class="appointment-owner">Dueño: Juan Pérez</div>
-                    </div>
-                    <span class="appointment-status status-confirmed">Confirmada</span>
+                <div class="welcome-section">
+                    <h2>¡Bienvenida de nuevo, {{ request.user.first_name }} {{ request.user.last_name }}👋</h2>
+                    <p style="color: #666;">Hay {{ total_citas_hoy }} citas programadas para hoy</p>
                 </div>
-                
-                <div class="appointment-item">
-                    <div class="appointment-info">
-                        <div class="appointment-time">10:30 AM</div>
-                        <div class="appointment-pet">🐈 Luna - Vacunación</div>
-                        <div class="appointment-owner">Dueño: Ana Martínez</div>
+
+                <!-- Stats Grid Estadisticas principal-->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Citas Hoy</div>
+                        <div class="stat-number">{{ total_citas_hoy }}</div>
+                        <button class="btn-action">Ver todas</button>
                     </div>
-                    <span class="appointment-status status-pending">Pendiente</span>
-                </div>
-                
-                <div class="appointment-item">
-                    <div class="appointment-info">
-                        <div class="appointment-time">11:45 AM</div>
-                        <div class="appointment-pet">🐕 Rocky - Control Post-operatorio</div>
-                        <div class="appointment-owner">Dueño: Carlos Rodríguez</div>
+                    <div class="stat-card orange">
+                        <div class="stat-label">Pacientes Activos</div>
+                        <div class="stat-number" style="color: #ff9800;">{{ total_clientes_activos }}</div>
+                        <button class="btn-action">Consultar</button>
                     </div>
-                    <span class="appointment-status status-confirmed">Confirmada</span>
-                </div>
-                
-                <div class="appointment-item">
-                    <div class="appointment-info">
-                        <div class="appointment-time">02:00 PM</div>
-                        <div class="appointment-pet">🐇 Copito - Revisión Dental</div>
-                        <div class="appointment-owner">Dueño: Laura Sánchez</div>
+                    <div class="stat-card purple">
+                        <div class="stat-label">Total Citas</div>
+                        <div class="stat-number" style="color: #9c27b0;">{{ total_citas }}</div>
+                        <button class="btn-action">Detalles</button>
                     </div>
-                    <span class="appointment-status status-pending">Pendiente</span>
                 </div>
-                
-                <div class="appointment-item">
-                    <div class="appointment-info">
-                        <div class="appointment-time">04:30 PM</div>
-                        <div class="appointment-pet">🐕 Toby - Desparasitación</div>
-                        <div class="appointment-owner">Dueño: Miguel Torres</div>
+
+                <!-- Appointments Section -->
+                <div class="appointments-section">
+                    <h3 class="section-title">📅 Citas de Hoy</h3>
+
+                    {% if citas %}
+                    {% for cita in citas %}
+                    <div class="appointment-item">
+                        <div class="appointment-info">
+                            <div class="appointment-time">
+                                {{ cita.hora|time:"h:i A" }}
+                            </div>
+
+                            <div class="appointment-pet">
+                                🐾 {{ cita.id_mascota.nombre }} - {{ cita.motivo }}
+                            </div>
+
+                            <div class="appointment-owner">
+                                Dueño: {{ cita.mascota_id.cliente_id.nombre }} {{ cita.mascota_id.cliente_id.apellido }}
+                            </div>
+                        </div>
+
+                        {% if cita.estado == "Programada" %}
+                            <span class="appointment-status status-scheduled">Programada</span>
+                        {% elif cita.estado == "Confirmada" %}
+                            <span class="appointment-status status-confirmed">Confirmada</span>
+                        {% elif cita.estado == "Cancelada" %}
+                            <span class="appointment-status status-cancelled">Cancelada</span>
+                        {% elif cita.estado == "Atendida" %}
+                            <span class="appointment-status status-attended">Atendida</span>
+                        {% else %}
+                            <span class="appointment-status status-pending">Pendiente</span>
+                        {% endif %}
+
                     </div>
-                    <span class="appointment-status status-confirmed">Confirmada</span>
+                    {% endfor %}
+                    {% else %}
+                        <p>No hay citas para hoy.</p>
+                    {% endif %}
                 </div>
-            </div>
+            </template>
         </div>
-    </div>
+
+        <script src="{% static 'pagInicio/js/scripts.js' %}"></script>
 </body>
+
 </html>
