@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -65,6 +66,8 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            color: white;
+            text-decoration: none;
         }
 
         .menu-item.active {
@@ -193,32 +196,39 @@
             background-color: #d0d0d0;
         }
 
+        .messages {
+            margin-bottom: 20px;
+        }
+
         .alert {
             padding: 15px 20px;
             border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
+            margin-bottom: 10px;
         }
 
-        .alert.success {
+        .alert-success {
             background-color: #d4edda;
             color: #155724;
             border-left: 4px solid #28a745;
         }
 
-        .alert.error {
+        .alert-error, .alert-danger {
             background-color: #f8d7da;
             color: #721c24;
             border-left: 4px solid #dc3545;
         }
 
-        .alert.show {
-            display: block;
-        }
-
         .required {
             color: #dc3545;
             margin-left: 3px;
+        }
+
+        .errorlist {
+            color: #dc3545;
+            list-style: none;
+            padding: 5px 0;
+            margin: 0;
+            font-size: 13px;
         }
 
         @media (max-width: 768px) {
@@ -250,27 +260,27 @@
                 <p>Sistema de Gestión Veterinaria</p>
             </div>
         </div>
-        <div class="menu-item">
+        <a href="{% url 'dashboard' %}" class="menu-item">
             <span>🏠</span> Dashboard
-        </div>
-        <div class="menu-item active">
+        </a>
+        <a href="{% url 'registro_cliente_mascota' %}" class="menu-item active">
             <span>📋</span> Registrar
-        </div>
-        <div class="menu-item">
+        </a>
+        <a href="#" class="menu-item">
             <span>📅</span> Agendar
-        </div>
-        <div class="menu-item">
+        </a>
+        <a href="{% url 'pagConsultar:consultar_clientes' %}" class="menu-item">
             <span>🔍</span> Consultar
-        </div>
-        <div class="menu-item">
+        </a>
+        <a href="#" class="menu-item">
             <span>💉</span> Vacunación
-        </div>
-        <div class="menu-item">
+        </a>
+        <a href="#" class="menu-item">
             <span>📊</span> Reportes
-        </div>
-        <div class="menu-item">
+        </a>
+        <a href="#" class="menu-item">
             <span>⚙️</span> Configuración
-        </div>
+        </a>
     </div>
 
     <div class="main-content">
@@ -279,10 +289,21 @@
             <p>Complete todos los campos para registrar un nuevo cliente con su mascota</p>
         </div>
 
-        <div id="alertBox" class="alert"></div>
+        <!-- Mostrar mensajes de Django -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
 
         <div class="form-container">
-            <form id="registroForm">
+            <form method="POST" action="{% url 'registro_cliente_mascota' %}">
+                {% csrf_token %}
+                
                 <!-- Sección Cliente -->
                 <div class="section-title">
                     👤 Datos del Cliente
@@ -290,28 +311,33 @@
                 
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="nombre">Nombre <span class="required">*</span></label>
-                        <input type="text" id="nombre" name="nombre" required>
+                        <label for="{{ cliente_form.nombre.id_for_label }}">Nombre <span class="required">*</span></label>
+                        {{ cliente_form.nombre }}
+                        {{ cliente_form.nombre.errors }}
                     </div>
                     
                     <div class="form-group">
-                        <label for="apellido">Apellido <span class="required">*</span></label>
-                        <input type="text" id="apellido" name="apellido" required>
+                        <label for="{{ cliente_form.apellido.id_for_label }}">Apellido <span class="required">*</span></label>
+                        {{ cliente_form.apellido }}
+                        {{ cliente_form.apellido.errors }}
                     </div>
                     
                     <div class="form-group full-width">
-                        <label for="direccion">Dirección <span class="required">*</span></label>
-                        <input type="text" id="direccion" name="direccion" required>
+                        <label for="{{ cliente_form.direccion.id_for_label }}">Dirección <span class="required">*</span></label>
+                        {{ cliente_form.direccion }}
+                        {{ cliente_form.direccion.errors }}
                     </div>
                     
                     <div class="form-group">
-                        <label for="email">Email <span class="required">*</span></label>
-                        <input type="email" id="email" name="email" required>
+                        <label for="{{ cliente_form.email.id_for_label }}">Email <span class="required">*</span></label>
+                        {{ cliente_form.email }}
+                        {{ cliente_form.email.errors }}
                     </div>
                     
                     <div class="form-group">
-                        <label for="telefono">Teléfono <span class="required">*</span></label>
-                        <input type="tel" id="telefono" name="telefono" required>
+                        <label for="{{ cliente_form.telefono.id_for_label }}">Teléfono <span class="required">*</span></label>
+                        {{ cliente_form.telefono }}
+                        {{ cliente_form.telefono.errors }}
                     </div>
                 </div>
 
@@ -322,111 +348,42 @@
                 
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="nombreMascota">Nombre <span class="required">*</span></label>
-                        <input type="text" id="nombreMascota" name="nombreMascota" required>
+                        <label for="{{ mascota_form.nombre.id_for_label }}">Nombre <span class="required">*</span></label>
+                        {{ mascota_form.nombre }}
+                        {{ mascota_form.nombre.errors }}
                     </div>
                     
                     <div class="form-group">
-                        <label for="especie">Especie <span class="required">*</span></label>
-                        <select id="especie" name="especie" required>
-                            <option value="">Seleccione...</option>
-                            <option value="Perro">Perro</option>
-                            <option value="Gato">Gato</option>
-                            <option value="Ave">Ave</option>
-                            <option value="Conejo">Conejo</option>
-                            <option value="Otro">Otro</option>
-                        </select>
+                        <label for="{{ mascota_form.especie.id_for_label }}">Especie <span class="required">*</span></label>
+                        {{ mascota_form.especie }}
+                        {{ mascota_form.especie.errors }}
                     </div>
                     
                     <div class="form-group">
-                        <label for="raza">Raza <span class="required">*</span></label>
-                        <input type="text" id="raza" name="raza" required>
+                        <label for="{{ mascota_form.raza.id_for_label }}">Raza <span class="required">*</span></label>
+                        {{ mascota_form.raza }}
+                        {{ mascota_form.raza.errors }}
                     </div>
                     
                     <div class="form-group">
-                        <label for="edad">Edad (años) <span class="required">*</span></label>
-                        <input type="number" id="edad" name="edad" min="0" step="0.5" required>
+                        <label for="{{ mascota_form.edad.id_for_label }}">Edad (años) <span class="required">*</span></label>
+                        {{ mascota_form.edad }}
+                        {{ mascota_form.edad.errors }}
                     </div>
                     
                     <div class="form-group full-width">
-                        <label for="peso">Peso (kg) <span class="required">*</span></label>
-                        <input type="number" id="peso" name="peso" min="0" step="0.1" required>
+                        <label for="{{ mascota_form.peso.id_for_label }}">Peso (kg) <span class="required">*</span></label>
+                        {{ mascota_form.peso }}
+                        {{ mascota_form.peso.errors }}
                     </div>
                 </div>
 
                 <div class="button-group">
-                    <button type="button" class="btn btn-secondary" onclick="limpiarFormulario()">Cancelar</button>
+                    <button type="reset" class="btn btn-secondary">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Registrar</button>
                 </div>
             </form>
         </div>
     </div>
-
-    <script>
-        const form = document.getElementById('registroForm');
-        const alertBox = document.getElementById('alertBox');
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Validar que todos los campos estén completos
-            const formData = new FormData(form);
-            let isValid = true;
-            
-            for (let [key, value] of formData.entries()) {
-                if (!value.trim()) {
-                    isValid = false;
-                    break;
-                }
-            }
-            
-            if (!isValid) {
-                mostrarAlerta('Por favor complete todos los campos requeridos', 'error');
-                return;
-            }
-            
-            // Crear objetos de cliente y mascota
-            const cliente = {
-                nombre: formData.get('nombre'),
-                apellido: formData.get('apellido'),
-                direccion: formData.get('direccion'),
-                email: formData.get('email'),
-                telefono: formData.get('telefono')
-            };
-            
-            const mascota = {
-                nombre: formData.get('nombreMascota'),
-                especie: formData.get('especie'),
-                raza: formData.get('raza'),
-                edad: formData.get('edad'),
-                peso: formData.get('peso')
-            };
-            
-            console.log('Cliente:', cliente);
-            console.log('Mascota:', mascota);
-            
-            // Mostrar mensaje de éxito
-            mostrarAlerta(`✅ Registro exitoso! Cliente: ${cliente.nombre} ${cliente.apellido} - Mascota: ${mascota.nombre}`, 'success');
-            
-            // Limpiar formulario después de 2 segundos
-            setTimeout(() => {
-                limpiarFormulario();
-            }, 2000);
-        });
-
-        function mostrarAlerta(mensaje, tipo) {
-            alertBox.textContent = mensaje;
-            alertBox.className = `alert ${tipo} show`;
-            
-            setTimeout(() => {
-                alertBox.classList.remove('show');
-            }, 4000);
-        }
-
-        function limpiarFormulario() {
-            form.reset();
-            alertBox.classList.remove('show');
-        }
-    </script>
 </body>
 </html>

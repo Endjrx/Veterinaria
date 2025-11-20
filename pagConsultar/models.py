@@ -14,7 +14,6 @@ class Cliente(models.Model):
     class Meta:
         verbose_name = "Cliente"
         verbose_name_plural = "Clientes"
-        db_table = 'pagregister_cliente'
         ordering = ['-fecha_registro']
 
 
@@ -41,5 +40,6 @@ class Mascota(models.Model):
     class Meta:
         verbose_name = "Mascota"
         verbose_name_plural = "Mascotas"
-        db_table = 'pagregister_mascota'
         ordering = ['-fecha_registro']
+
+        

@@ -6,8 +6,8 @@ from .forms import ClienteForm, MascotaForm
 
 def registro_cliente_mascota(request):
     if request.method == 'POST':
-        cliente_form = ClienteForm(request.POST)
-        mascota_form = MascotaForm(request.POST)
+        cliente_form = ClienteForm(request.POST, prefix="cliente")
+        mascota_form = MascotaForm(request.POST, prefix="mascota")
         
         if cliente_form.is_valid() and mascota_form.is_valid():
             try:
@@ -27,8 +27,9 @@ def registro_cliente_mascota(request):
         else:
             messages.error(request, '❌ Por favor corrija los errores en el formulario')
     else:
-        cliente_form = ClienteForm()
-        mascota_form = MascotaForm()
+        # IMPORTANTE: Usar prefix en los formularios vacíos también
+        cliente_form = ClienteForm(prefix="cliente")
+        mascota_form = MascotaForm(prefix="mascota")
     
     context = {
         'cliente_form': cliente_form,
@@ -42,6 +43,7 @@ def lista_clientes(request):
     context = {
         'clientes': clientes
     }
+    # Mantener el mismo template que tenías originalmente
     return render(request, 'pagRegister/vet_register.html', context)
 
 
@@ -53,4 +55,5 @@ def dashboard(request):
         'total_clientes': total_clientes,
         'total_mascotas': total_mascotas,
     }
+    # Mantener el mismo template que tenías originalmente
     return render(request, 'pagRegister/vet_register.html', context)
