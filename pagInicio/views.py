@@ -25,9 +25,9 @@ def home(request):
 
 #Funcion que se encargara de recoletar los datos de la bddd
 def api_mascotas(request):
-    mascotas = Mascota.objects.select_related ("cliente_id").all ()
+    mascotas = Mascota.objects.select_related ("cliente_id").all () #Se reciben los datos de las mascotas y clientes 
 
-    data = []
+    data = [] #Se declara un array que almacenara datos en formado JSON
 
     for m in mascotas:
         data.append ({

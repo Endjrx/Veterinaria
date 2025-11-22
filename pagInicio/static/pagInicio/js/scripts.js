@@ -113,7 +113,7 @@ const secciones = {
         <div class="contenedor-principal">
 
             <div class="header">
-                <h1>Consultar Clientes y Mascotas 🔍</h1>
+                <h1>Consultar Clientes y Mascotas🔍</h1>
                 <p>Busca, visualiza, edita o elimina registros de clientes y sus mascotas</p>
             </div>
 
