@@ -21,7 +21,8 @@ const secciones = {
             <div id="alertBox" class="alert"></div>
 
             <div class="form-container">
-                <form id="registroForm">
+                <form id="formRegistrarCliente" action="/registrar_cliente/" method="POST">
+
                     <!-- Sección Cliente -->
                     <div class="section-title">
                         👤 Datos del Cliente
@@ -107,8 +108,48 @@ const secciones = {
         <p>Agenda tus citas aquí.</p>
     `,
     consultar: `
-        <h2>Consultar</h2>
-        <p>Consulta la información registrada.</p>
+    
+    
+        <div class="contenedor-principal">
+
+            <div class="header">
+                <h1>Consultar Clientes y Mascotas 🔍</h1>
+                <p>Busca, visualiza, edita o elimina registros de clientes y sus mascotas</p>
+            </div>
+
+            <div class="search-seccion">
+                <div class="bar-search">
+                    <input type="text" class="search-input" placeholder="Buscar por nombre de cliente, mascota, email o telefono">
+                    <button class="btn btnBuscar" onclick="">🔍 Buscar</button>
+                    <button class="btn btnLimpiar" onclick="">✖ Limpiar</button>
+                </div>
+            </div>
+
+            <div class="contenedor-tablas">
+
+                <div class="tabla-header">
+                    <h3 class="tabla-title">📋 Registros de Clientes y Mascotas</h3>
+                </div>
+
+                <table id="datosTabla">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Cliente</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Mascota</th>
+                            <th>Especie</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoTabla"></tbody>
+                </table>
+
+            </div>
+
+        </div>
+
     `,
     vacunacion: `
         <h2>Vacunación</h2>
@@ -142,5 +183,60 @@ botones.forEach(boton => {
 
         // 4. Actualizar contenido
         contenedor.innerHTML = secciones[section];
+        if (section === "registrar") inicializarRegistrar();
+        if (section === "consultar") cargarMascotas ();
     });
 });
+
+
+
+
+
+
+
+/*Funcion que nos permitira hacer que el contenido de nuestra tabla cargue segun los datos que reciban de la bdd
+utilizando la obtencion de los datos por medio de una URL exclusiva para el envio de datos */
+
+function cargarMascotas () {
+
+    fetch ("/inicio/api/mascotas/")
+        .then (response => response.json())
+        .then (data => {
+            const cuerpo = document.getElementById ("cuerpoTabla");
+            cuerpo.innerHTML = ""; //Para limpiar la tabla
+
+            if (data.mascotas.length === 0) {
+                cuerpo.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px;">
+                            <div class="empty-state-icon">🔍</div>
+                            <h3>No hay registros disponibles</h3>
+                            <p>Comienza registrando tu primer cliente y mascota</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            data.mascotas.forEach (m => {
+                cuerpo.innerHTML += `
+                    <tr>
+                        <td>${m.id}</td>
+                        <td>${m.cliente}</td>
+                        <td>${m.email}</td>
+                        <td>${m.telefono}</td>
+                        <td>${m.mascota}</td>
+                        <td>${m.especie}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-view" title="Ver detalles">👁️</button>
+                                <button class="btn-icon btn-edit" title="Editar">✏️</button>
+                                <button class="btn-icon btn-delete" title="Eliminar">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        })
+        .catch (error => console.log ("Error:", error));
+}

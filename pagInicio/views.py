@@ -2,8 +2,9 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from cita.models import Cita
 from cliente.models import Cliente
-
+from mascota.models import Mascota
 from datetime import date
+from django.http import JsonResponse
 
 @login_required(login_url='home-login')
 def home(request):
@@ -22,4 +23,20 @@ def home(request):
 
 
 
+#Funcion que se encargara de recoletar los datos de la bddd
+def api_mascotas(request):
+    mascotas = Mascota.objects.select_related ("cliente_id").all ()
 
+    data = []
+
+    for m in mascotas:
+        data.append ({
+            "id": m.id_mascota,
+            "cliente": m.cliente_id.nombre,
+            "email": m.cliente_id.email,
+            "telefono": m.cliente_id.telefono,
+            "mascota": m.nombre,
+            "especie": m.especie
+        })
+
+    return JsonResponse ({"mascotas": data})
