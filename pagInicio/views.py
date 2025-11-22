@@ -40,3 +40,47 @@ def api_mascotas(request):
         })
 
     return JsonResponse ({"mascotas": data})
+
+
+
+
+
+def registrar_cliente(request):
+    if request.method == "POST":
+
+        # 1. Obtener datos CLIENTE
+        nombre = request.POST.get("nombre")
+        apellido = request.POST.get("apellido")
+        direccion = request.POST.get("direccion")
+        email = request.POST.get("email")
+        telefono = request.POST.get("telefono")
+
+        # Crear cliente
+        cliente = Cliente.objects.create(
+            nombre=nombre,
+            apellido=apellido,
+            direccion=direccion,
+            email=email,
+            telefono=telefono
+        )
+
+        # 2. Obtener datos MASCOTA
+        nombreMascota = request.POST.get("nombreMascota")
+        especie = request.POST.get("especie")
+        raza = request.POST.get("raza")
+        edad = request.POST.get("edad")
+        peso = request.POST.get("peso")
+
+        Mascota.objects.create(
+            nombre=nombreMascota,
+            especie=especie,
+            raza=raza,
+            edad=edad,
+            peso=peso,
+            cliente_id=cliente
+        )
+
+        # 3. Respuesta JSON
+        return JsonResponse({"status": "ok", "message": "Registro creado correctamente"})
+
+    return JsonResponse({"status": "error", "message": "Método no permitido"}, status=400)  

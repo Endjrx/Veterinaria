@@ -21,7 +21,7 @@ const secciones = {
             <div id="alertBox" class="alert"></div>
 
             <div class="form-container">
-                <form id="formRegistrarCliente" action="/registrar_cliente/" method="POST">
+                <form id="formRegistrarCliente" method="POST">  
 
                     <!-- Sección Cliente -->
                     <div class="section-title">
@@ -85,7 +85,7 @@ const secciones = {
                         
                         <div class="form-group">
                             <label for="edad">Edad (años) <span class="required">*</span></label>
-                            <input type="number" id="edad" name="edad" min="0" step="0.5" required>
+                            <input type="number" id="edad" name="edad" min="0" step="1" required>
                         </div>
                         
                         <div class="form-group full-width">
@@ -95,9 +95,11 @@ const secciones = {
                     </div>
 
                     <div class="button-group">
-                        <button type="button" class="btn btn-secondary" onclick="limpiarFormulario()">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Registrar</button>
+                        <button type="button" class="btn btn-secondary">Cancelar</button>
+                        <button type="button" id="btnRegistrar" class="btn btn-primary">Registrar</button>
                     </div>
+
+                    
                 </form>
             </div>
         </div>
@@ -183,7 +185,7 @@ botones.forEach(boton => {
 
         // 4. Actualizar contenido
         contenedor.innerHTML = secciones[section];
-        if (section === "registrar") inicializarRegistrar();
+        if (section === "registrar") registrarFuncionalidad ();
         if (section === "consultar")  {
             configurarBuscador ();
             cargarMascotas ();
@@ -286,6 +288,73 @@ function filtrarTabla() {
         m.especie.toLowerCase().includes(texto) ||
         m.id.toString().includes(texto)
     );
-    
+
     renderTabla(filtrados);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/**Funcion proporcionada por DJango: */
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+
+
+/** Funcion que se va a encargar para la logica de la session registrar clientes, se encarga de recibir  */
+function registrarFuncionalidad () {
+    
+    document.getElementById("btnRegistrar").addEventListener("click", async function () {
+
+        const form = document.getElementById("formRegistrarCliente");
+        const formData = new FormData(form);
+
+        // CSRF
+        const csrf = getCookie("csrftoken");
+
+        const response = await fetch("/inicio/api/registrar/cliente-mascota/", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrf,
+            },
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.status === "ok") {
+            alert("Registro creado exitosamente");
+
+            // Opcional: resetear formulario
+            form.reset();
+
+            // Opcional: actualizar tu tabla dinámica
+            // cargarClientes(); // si tienes esta función
+        } else {
+            alert("Error: " + data.message);
+        }
+    });
+
+
 }
