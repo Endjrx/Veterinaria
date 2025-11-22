@@ -119,8 +119,8 @@ const secciones = {
 
             <div class="search-seccion">
                 <div class="bar-search">
-                    <input type="text" class="search-input" placeholder="Buscar por nombre de cliente, mascota, email o telefono">
-                    <button class="btn btnBuscar" onclick="">🔍 Buscar</button>
+                    <input type="text" id="entradaBusqueda" class="search-input" placeholder="Buscar por nombre de cliente, mascota, email o telefono">
+                    <button id="buscarBoton" class="btn btnBuscar">🔍 Buscar</button>
                     <button class="btn btnLimpiar" onclick="">✖ Limpiar</button>
                 </div>
             </div>
@@ -184,7 +184,10 @@ botones.forEach(boton => {
         // 4. Actualizar contenido
         contenedor.innerHTML = secciones[section];
         if (section === "registrar") inicializarRegistrar();
-        if (section === "consultar") cargarMascotas ();
+        if (section === "consultar")  {
+            configurarBuscador ();
+            cargarMascotas ();
+        }
     });
 });
 
@@ -197,16 +200,32 @@ botones.forEach(boton => {
 /*Funcion que nos permitira hacer que el contenido de nuestra tabla cargue segun los datos que reciban de la bdd
 utilizando la obtencion de los datos por medio de una URL exclusiva para el envio de datos */
 
+let mascotasOriginales = [];
+
 function cargarMascotas () {
 
     fetch ("/inicio/api/mascotas/")
         .then (response => response.json())
         .then (data => {
-            const cuerpo = document.getElementById ("cuerpoTabla");
-            cuerpo.innerHTML = ""; //Para limpiar la tabla
+            mascotasOriginales = data.mascotas;
+            renderTabla (mascotasOriginales);
+        })
+        .catch (error => console.log ("Error:", error));
+}
 
-            if (data.mascotas.length === 0) {
-                cuerpo.innerHTML = `
+
+
+/* Funcion modular que se va a encargar de mostrar los registros en la tabla, por motivos de reutilizacion de logica,
+se crea la funcion renderTabla, para al momento de mostrar registros filtrados, reuitlizar la logica de mostrar todos los
+registros sin filtrar*/
+
+function renderTabla (lista) {
+
+    const cuerpo = document.getElementById("cuerpoTabla");
+    cuerpo.innerHTML = ""; //Para limpiar la tabla
+
+    if (lista.length === 0) {
+        cuerpo.innerHTML = `
                     <tr>
                         <td colspan="7" style="text-align: center; padding: 40px;">
                             <div class="empty-state-icon">🔍</div>
@@ -215,28 +234,58 @@ function cargarMascotas () {
                         </td>
                     </tr>
                 `;
-                return;
-            }
+        return;
+    }
 
-            data.mascotas.forEach (m => {
-                cuerpo.innerHTML += `
-                    <tr>
-                        <td>${m.id}</td>
-                        <td>${m.cliente}</td>
-                        <td>${m.email}</td>
-                        <td>${m.telefono}</td>
-                        <td>${m.mascota}</td>
-                        <td>${m.especie}</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn-icon btn-view" title="Ver detalles">👁️</button>
-                                <button class="btn-icon btn-edit" title="Editar">✏️</button>
-                                <button class="btn-icon btn-delete" title="Eliminar">🗑️</button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            });
-        })
-        .catch (error => console.log ("Error:", error));
+    lista.forEach(m => {
+        cuerpo.innerHTML += `
+            <tr>
+                <td>${m.id}</td>
+                <td>${m.cliente}</td>
+                <td>${m.email}</td>
+                <td>${m.telefono}</td>
+                <td>${m.mascota}</td>
+                <td>${m.especie}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn-icon btn-view" title="Ver detalles">👁️</button>
+                        <button class="btn-icon btn-edit" title="Editar">✏️</button>
+                        <button class="btn-icon btn-delete" title="Eliminar">🗑️</button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+
+}
+
+
+/*Esta funcion simplemente se encargara de configurar los botones, de tal manera que tengan un listener
+asociado que este atento a la actividad que tenga los elementos y se dispare el evento */
+
+function configurarBuscador() {
+
+    const input = document.getElementById("entradaBusqueda");
+    const boton = document.getElementById("buscarBoton");
+
+    input.addEventListener("input", filtrarTabla);
+    boton.addEventListener("click", filtrarTabla);
+
+}
+
+
+
+function filtrarTabla() {
+    const texto = document.getElementById("entradaBusqueda").value.toLowerCase();
+
+    const filtrados = mascotasOriginales.filter(m => 
+        m.cliente.toLowerCase().includes(texto) ||
+        m.email.toLowerCase().includes(texto) ||
+        m.telefono.toLowerCase().includes(texto) ||
+        m.mascota.toLowerCase().includes(texto) ||
+        m.especie.toLowerCase().includes(texto) ||
+        m.id.toString().includes(texto)
+    );
+    
+    renderTabla(filtrados);
 }
