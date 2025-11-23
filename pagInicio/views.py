@@ -5,6 +5,7 @@ from cliente.models import Cliente
 from mascota.models import Mascota
 from datetime import date
 from django.http import JsonResponse
+from empl_veterinario.models import Veterinario
 
 @login_required(login_url='home-login')
 def home(request):
@@ -84,3 +85,68 @@ def registrar_cliente(request):
         return JsonResponse({"status": "ok", "message": "Registro creado correctamente"})
 
     return JsonResponse({"status": "error", "message": "Método no permitido"}, status=400)  
+
+
+
+
+
+
+def registrar_citas (request):
+    if request.method == "POST":
+
+        fecha = request.POST.get("fecha")
+        hora = request.POST.get("hora")
+        motivo = request.POST.get("motivo")
+        estado = request.POST.get("estado")
+
+        mascota_id = request.POST.get("mascota")
+        veterinario_id = request.POST.get("veterinario")
+
+        # Obtener objetos
+        try:
+            mascota = Mascota.objects.get(id_mascota=mascota_id)
+            veterinario = Veterinario.objects.get(id_veterinario=veterinario_id)
+        except:
+            return JsonResponse({"status": "error", "message": "Mascota o veterinario no válido"}, status=400)
+
+        # Crear la cita
+        Cita.objects.create(
+            fecha=fecha,
+            hora=hora,
+            motivo=motivo,
+            estado=estado,
+            mascota_id=mascota,
+            veterinario_id=veterinario
+        )
+
+        return JsonResponse({"status": "ok", "message": "Cita creada correctamente"})
+
+    return JsonResponse({"status": "error", "message": "Método no permitido"}, status=400)
+
+
+
+#Funcion auxiliar que ayudara a cargar los veterinarios y mascotas disponibles en la BDD para las agendas, se encarga de enviar los datos a una URL de transferencia.
+def cargar_datos(request):
+
+    # 1. MASCOTAS
+    mascotas = list(Mascota.objects.all().values(
+        "id_mascota",
+        "nombre",
+        "especie"
+    ))
+
+    # 2. VETERINARIOS con datos del empleado
+    veterinarios_data = []
+    veterinarios = Veterinario.objects.select_related("id_veterinario").all()
+
+    for vet in veterinarios:
+        veterinarios_data.append({
+            "id": vet.id_veterinario.pk,             # ID del empleado
+            "nombre": vet.id_veterinario.nombre,
+            "apellido": vet.id_veterinario.apellido
+        })
+
+    return JsonResponse({
+        "mascotas": mascotas,
+        "veterinarios": veterinarios_data
+    })

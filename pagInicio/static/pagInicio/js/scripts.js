@@ -121,11 +121,11 @@ const secciones = {
 
                         <div class="form-group">
                             <label>Fecha <span class="required">*</span></label>
-                            <input type="date" id="fecha" required>
+                            <input type="date" id="fecha" name="fecha" required>
                         </div>
                         <div class="form-group">
                             <label>Hora <span class="required">*</span></label>
-                            <input type="time" id="hora" required>
+                            <input type="time" id="hora" name="hora" required>
                         </div>
 
                     </div>
@@ -135,20 +135,14 @@ const secciones = {
 
                         <div class="form-group">
                             <label>Mascota <span class="required">*</span></label>
-                            <select id="mascota" required>
+                            <select id="mascota" name="mascota" required>
                                 <option value="">Seleccione una mascota...</option>
-                                <option value="1">Mono - Endys (Perro)</option>
-                                <option value="2">Luna - María García (Gato)</option>
-                                <option value="3">Max - Carlos Pérez (Perro)</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Veterinario <span class="required">*</span></label>
-                            <select id="veterinario" required>
+                            <select id="veterinario" name="veterinario" required>
                                 <option value="">Seleccione un veterinario...</option>
-                                <option value="1">Dr. Juan Rodríguez</option>
-                                <option value="2">Dra. Ana Martínez</option>
-                                <option value="3">Dr. Pedro López</option>
                             </select>
                         </div>
 
@@ -159,7 +153,7 @@ const secciones = {
                     <div class="filaForm full">
                         <div class="form-group">
                             <label>Motivo de la Cita <span class="required">*</span></label>
-                            <textarea id="motivo" placeholder="Describa el motivo de la consulta..." required></textarea>
+                            <textarea id="motivo" name="motivo" placeholder="Describa el motivo de la consulta..." required></textarea>
                         </div>
                     </div>
 
@@ -167,7 +161,7 @@ const secciones = {
                     <div class="filaForm">
                         <div class="form-group">
                             <label>Estado <span class="required">*</span></label>
-                            <select id="estado" required>
+                            <select id="estado" name="estado" required>
                                 <option value="">Seleccione un estado...</option>
                                 <option value="Pendiente">Pendiente</option>
                                 <option value="Confirmada">Confirmada</option>
@@ -266,6 +260,11 @@ botones.forEach(boton => {
         // 4. Actualizar contenido
         contenedor.innerHTML = secciones[section];
         if (section === "registrar") registrarFuncionalidad ();
+        if (section === "agendar") {
+            cargarSelects();
+            agendamiento ();
+        }
+
         if (section === "consultar")  {
             configurarBuscador ();
             cargarMascotas ();
@@ -383,6 +382,7 @@ function filtrarTabla() {
 
 
 
+
 /**Funcion proporcionada por DJango: */
 function getCookie(name) {
     let cookieValue = null;
@@ -398,9 +398,6 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
-
-
 
 /** Funcion que se va a encargar para la logica de la session registrar clientes, se encarga de recibir  */
 function registrarFuncionalidad () {
@@ -438,3 +435,68 @@ function registrarFuncionalidad () {
 
 
 }
+
+
+
+
+
+
+
+
+
+
+function agendamiento () {
+
+    document.getElementById("btnRegistrarCita").addEventListener ("click", async () => {
+
+        const form = document.getElementById("citaForm");
+        const formData = new FormData(form);
+
+        // obtener CSRF token
+        const csrf = getCookie("csrftoken");
+
+        const response = await fetch("/inicio/api/registrar/cita/", {
+            method: "POST",
+            headers: { "X-CSRFToken": csrf },
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.status === "ok") {
+            alert("Cita registrada exitosamente");
+            form.reset();
+        } else {
+            alert("Error: " + data.message);
+        }
+    });
+    
+}
+
+
+
+
+async function cargarSelects() {
+    const response = await fetch('/inicio/api/cargar-datos-agenda/');
+    const data = await response.json();
+
+    const mascotaSelect = document.getElementById("mascota");
+    const veterinarioSelect = document.getElementById("veterinario");
+
+    // Llenar las mascotas dinámicamente
+    data.mascotas.forEach(m => {
+        const option = document.createElement("option");
+        option.value = m.id_mascota;
+        option.textContent = m.nombre;
+        mascotaSelect.appendChild(option);
+    });
+
+    // Llenar los veterinarios dinámicamente
+    data.veterinarios.forEach(v => {
+        const option = document.createElement("option");
+        option.value = v.id;
+        option.textContent = v.nombre;
+        veterinarioSelect.appendChild(option);
+    });
+}
+
