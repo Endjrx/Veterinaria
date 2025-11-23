@@ -281,7 +281,7 @@ botones.forEach(boton => {
 /*Funcion que nos permitira hacer que el contenido de nuestra tabla cargue segun los datos que reciban de la bdd
 utilizando la obtencion de los datos por medio de una URL exclusiva para el envio de datos */
 
-let mascotasOriginales = [];
+let mascotasOriginales = []; //Arreglo que contiene los datos sin filtrado para evitar realizar consultas innecesarias.
 
 function cargarMascotas () {
 
@@ -293,8 +293,6 @@ function cargarMascotas () {
         })
         .catch (error => console.log ("Error:", error));
 }
-
-
 
 /* Funcion modular que se va a encargar de mostrar los registros en la tabla, por motivos de reutilizacion de logica,
 se crea la funcion renderTabla, para al momento de mostrar registros filtrados, reuitlizar la logica de mostrar todos los
@@ -340,7 +338,6 @@ function renderTabla (lista) {
 
 }
 
-
 /*Esta funcion simplemente se encargara de configurar los botones, de tal manera que tengan un listener
 asociado que este atento a la actividad que tenga los elementos y se dispare el evento */
 
@@ -353,8 +350,6 @@ function configurarBuscador() {
     boton.addEventListener("click", filtrarTabla);
 
 }
-
-
 
 function filtrarTabla() {
     const texto = document.getElementById("entradaBusqueda").value.toLowerCase();
@@ -381,7 +376,7 @@ function filtrarTabla() {
 
 
 
-
+/**------------------------------------APARTADO DE FUNCIONALIDAD REGISTRAR CLIENTES-MASCOTAS---------------------------------------- */
 
 /**Funcion proporcionada por DJango: */
 function getCookie(name) {
@@ -443,7 +438,7 @@ function registrarFuncionalidad () {
 
 
 
-
+/**----------------------------------------APARTADO DE FUNCIONALIDAD SECCION AGENDAR CITAS------------------------------------- */
 
 function agendamiento () {
 

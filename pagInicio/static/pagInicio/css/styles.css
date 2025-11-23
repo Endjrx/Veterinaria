@@ -279,6 +279,7 @@ body {
     border-radius: 12px;
     margin-bottom: 30px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    display: block;
 }
 
 .main-contentRegistrar .header h1 {
