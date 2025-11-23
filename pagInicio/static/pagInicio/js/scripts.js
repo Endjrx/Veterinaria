@@ -106,8 +106,88 @@ const secciones = {
 
     `,
     agendar: `
-        <h2>Agendar</h2>
-        <p>Agenda tus citas aquí.</p>
+        <div class="main-contentAgendar">
+
+            <div class="header">
+                <h1> Agendar Cita Veterinaria 📅 </h1>
+                <p>Complete todos los campos para agendar una nueva cita veterinaria</p>
+            </div>
+
+            <div class="formContainer">
+
+                <div class="seccion-header"> 📝 Datos de la Cita </div>
+                <form id="citaForm">
+                    <div class="filaForm">
+
+                        <div class="form-group">
+                            <label>Fecha <span class="required">*</span></label>
+                            <input type="date" id="fecha" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Hora <span class="required">*</span></label>
+                            <input type="time" id="hora" required>
+                        </div>
+
+                    </div>
+
+
+                    <div class="filaForm">
+
+                        <div class="form-group">
+                            <label>Mascota <span class="required">*</span></label>
+                            <select id="mascota" required>
+                                <option value="">Seleccione una mascota...</option>
+                                <option value="1">Mono - Endys (Perro)</option>
+                                <option value="2">Luna - María García (Gato)</option>
+                                <option value="3">Max - Carlos Pérez (Perro)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Veterinario <span class="required">*</span></label>
+                            <select id="veterinario" required>
+                                <option value="">Seleccione un veterinario...</option>
+                                <option value="1">Dr. Juan Rodríguez</option>
+                                <option value="2">Dra. Ana Martínez</option>
+                                <option value="3">Dr. Pedro López</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="filaForm full">
+                        <div class="form-group">
+                            <label>Motivo de la Cita <span class="required">*</span></label>
+                            <textarea id="motivo" placeholder="Describa el motivo de la consulta..." required></textarea>
+                        </div>
+                    </div>
+
+
+                    <div class="filaForm">
+                        <div class="form-group">
+                            <label>Estado <span class="required">*</span></label>
+                            <select id="estado" required>
+                                <option value="">Seleccione un estado...</option>
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="Confirmada">Confirmada</option>
+                                <option value="Programada">Programada</option>
+                                <option value="Atendida">Atendida</option>
+                                <option value="Cancelada">Cancelada</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" onclick="">Cancelar</button>
+                        <button type="button" id="btnRegistrarCita" class="btn btn-primary">Registrar Cita</button>
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
     `,
     consultar: `
     
