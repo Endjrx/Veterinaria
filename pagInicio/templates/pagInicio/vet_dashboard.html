@@ -57,18 +57,18 @@
                 <span class="menu-icon">📊</span>
                 <span>Reportes</span>
             </button>
-            <button class="menu-item" data-section="configuracion">
+            <!-- <button class="menu-item" data-section="configuracion">
                 <span class="menu-icon">⚙️</span>
                 <span>Configuración</span>
-            </button>
+            </button> -->
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
 
             <div id="contenido-dinamico"> </div>
-            <template id="template-dashboard"> 
-                
+            <template id="template-dashboard">
+
                 <div class="welcome-section">
                     <h2>¡Bienvenida de nuevo, {{ request.user.first_name }} {{ request.user.last_name }}👋</h2>
                     <p style="color: #666;">Hay {{ total_citas_hoy }} citas programadas para hoy</p>
@@ -83,12 +83,12 @@
                     </div>
                     <div class="stat-card orange">
                         <div class="stat-label">Pacientes Activos</div>
-                        <div class="stat-number" style="color: #ff9800;">{{ total_clientes_activos }}</div>
+                        <div class="stat-number">{{ total_clientes_activos }}</div>
                         <button id="btnConsultar" class="btn-action">Consultar</button>
                     </div>
                     <div class="stat-card purple">
                         <div class="stat-label">Total Citas</div>
-                        <div class="stat-number" style="color: #9c27b0;">{{ total_citas }}</div>
+                        <div class="stat-number">{{ total_citas }}</div>
                         <button class="btn-action">Detalles</button>
                     </div>
                 </div>
@@ -115,21 +115,21 @@
                         </div>
 
                         {% if cita.estado == "Programada" %}
-                            <span class="appointment-status status-scheduled">Programada</span>
+                        <span class="appointment-status status-scheduled">Programada</span>
                         {% elif cita.estado == "Confirmada" %}
-                            <span class="appointment-status status-confirmed">Confirmada</span>
+                        <span class="appointment-status status-confirmed">Confirmada</span>
                         {% elif cita.estado == "Cancelada" %}
-                            <span class="appointment-status status-cancelled">Cancelada</span>
+                        <span class="appointment-status status-cancelled">Cancelada</span>
                         {% elif cita.estado == "Atendida" %}
-                            <span class="appointment-status status-attended">Atendida</span>
+                        <span class="appointment-status status-attended">Atendida</span>
                         {% else %}
-                            <span class="appointment-status status-pending">Pendiente</span>
+                        <span class="appointment-status status-pending">Pendiente</span>
                         {% endif %}
 
                     </div>
                     {% endfor %}
                     {% else %}
-                        <p>No hay citas para hoy.</p>
+                    <p>No hay citas para hoy.</p>
                     {% endif %}
                 </div>
             </template>

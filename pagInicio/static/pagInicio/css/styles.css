@@ -134,17 +134,24 @@ body {
     margin-bottom: 30px;
 }
 
+
 .stat-card {
+    padding: 24px;
+    border-radius: 12px;
     background: white;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    border-left: 5px solid #1a8754;
-    transition: transform 0.3s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-left: 4px solid #2e7d32;
+    transition: all 0.3s ease;
+    
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* 👈 Espaciado uniforme entre elementos */
+    align-items: flex-start;
 }
 
 .stat-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
 }
 
 .stat-card.orange {
@@ -159,16 +166,75 @@ body {
     border-left-color: #9c27b0;
 }
 
-.stat-number {
-    font-size: 36px;
-    font-weight: bold;
-    color: #1a8754;
-    margin: 10px 0;
-}
-
 .stat-label {
     color: #666;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+.stat-number {
+    font-size: 48px; /* 👈 MÁS GRANDE */
+    font-weight: 700;
+    color: #2e7d32;
+    line-height: 1;
+    margin: 0;
+}
+
+.stat-card.orange .stat-number {
+    color: #ff9800;
+}
+
+.stat-card.blue .stat-number {
+    color: #2196f3;
+}
+
+.stat-card.purple .stat-number {
+    color: #9c27b0;
+}
+
+.btn-action {
+    padding: 10px 20px;
+    background: #2e7d32;
+    color: white;
+    border: none;
+    border-radius: 6px;
     font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 4px;
+}
+
+.btn-action:hover {
+    background: #1b5e20;
+    transform: scale(1.02);
+}
+
+.stat-card.orange .btn-action {
+    background: #ff9800;
+}
+
+.stat-card.orange .btn-action:hover {
+    background: #f57c00;
+}
+
+.stat-card.blue .btn-action {
+    background: #2196f3;
+}
+
+.stat-card.blue .btn-action:hover {
+    background: #1976d2;
+}
+
+.stat-card.purple .btn-action {
+    background: #9c27b0;
+}
+
+.stat-card.purple .btn-action:hover {
+    background: #7b1fa2;
 }
 
 .appointments-section {
