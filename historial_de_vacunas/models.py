@@ -8,7 +8,7 @@ class Historial_de_Vacunas(models.Model):
     fecha_aplic = models.DateField(db_column='fecha_aplic')
     fecha_venc = models.DateField(db_column='fecha_venc')
     lote = models.CharField(max_length=50, db_column='lote')
-   # mascota_id = models.ForeignKey(Mascota, on_delete=models.CASCADE, db_column='mascota_id')
+    mascota_id = models.ForeignKey(Mascota, on_delete=models.CASCADE, db_column='mascota_id')
 
     class Meta:
         db_table = 'historial_de_Vacunas'
