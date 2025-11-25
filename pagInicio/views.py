@@ -6,6 +6,8 @@ from mascota.models import Mascota
 from datetime import date
 from django.http import JsonResponse
 from empl_veterinario.models import Veterinario
+from django.views.decorators.http import require_http_methods
+import json
 
 @login_required(login_url='home-login')
 def home(request):
@@ -150,3 +152,137 @@ def cargar_datos(request):
         "mascotas": mascotas,
         "veterinarios": veterinarios_data
     })
+
+
+
+
+# ============================================
+# 🔍 FUNCIÓN VER DETALLES - Obtiene info completa de cliente y mascota
+# ============================================
+def detalle_mascota(request, mascota_id):
+    try:
+        mascota = Mascota.objects.select_related("cliente_id").get(id_mascota=mascota_id)
+        
+        detalle = {
+            # Datos del cliente
+            "cliente_id": mascota.cliente_id.id_cliente,
+            "cliente_nombre": mascota.cliente_id.nombre,
+            "cliente_apellido": mascota.cliente_id.apellido,
+            "cliente_direccion": mascota.cliente_id.direccion,
+            "cliente_email": mascota.cliente_id.email,
+            "cliente_telefono": mascota.cliente_id.telefono,
+            
+            # Datos de la mascota
+            "mascota_id": mascota.id_mascota,
+            "mascota_nombre": mascota.nombre,
+            "mascota_especie": mascota.especie,
+            "mascota_raza": mascota.raza,
+            "mascota_edad": mascota.edad,
+            "mascota_peso": float(mascota.peso) if mascota.peso else 0
+        }
+        
+        return JsonResponse({"status": "ok", "detalle": detalle})
+    
+    except Mascota.DoesNotExist:
+        return JsonResponse({"status": "error", "message": "Mascota no encontrada"}, status=404)
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
+
+
+
+
+# ============================================
+# ✏️ FUNCIÓN EDITAR - Actualiza cliente y mascota
+# ============================================
+def editar_registro(request):
+    if request.method == "POST":
+        try:
+            # IDs de cliente y mascota
+            cliente_id = request.POST.get("clienteId")
+            mascota_id = request.POST.get("mascotaId")
+            
+            # Obtener objetos
+            cliente = Cliente.objects.get(id_cliente=cliente_id)
+            mascota = Mascota.objects.get(id_mascota=mascota_id)
+            
+            # Actualizar CLIENTE
+            cliente.nombre = request.POST.get("nombre")
+            cliente.apellido = request.POST.get("apellido")
+            cliente.direccion = request.POST.get("direccion")
+            cliente.email = request.POST.get("email")
+            cliente.telefono = request.POST.get("telefono")
+            cliente.save()
+            
+            # Actualizar MASCOTA
+            mascota.nombre = request.POST.get("nombreMascota")
+            mascota.especie = request.POST.get("especie")
+            mascota.raza = request.POST.get("raza")
+            mascota.edad = request.POST.get("edad")
+            mascota.peso = request.POST.get("peso")
+            mascota.save()
+            
+            return JsonResponse({"status": "ok", "message": "Registro actualizado correctamente"})
+        
+        except Cliente.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Cliente no encontrado"}, status=404)
+        except Mascota.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Mascota no encontrada"}, status=404)
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+    
+    return JsonResponse({"status": "error", "message": "Método no permitido"}, status=400)
+
+
+
+
+# ============================================
+# 🗑️ FUNCIÓN ELIMINAR EN CASCADA
+# Elimina: Cliente → Mascota → Citas asociadas
+# NO elimina de tablas que no existen (historial_de_Vacunas)
+# ============================================
+@require_http_methods(["DELETE"])
+def eliminar_registro(request, mascota_id):
+    try:
+        # Obtener la mascota
+        mascota = Mascota.objects.select_related("cliente_id").get(id_mascota=mascota_id)
+        
+        # Obtener el cliente asociado
+        cliente = mascota.cliente_id
+        
+        # PASO 1: Eliminar todas las citas asociadas a esta mascota
+        citas_eliminadas = Cita.objects.filter(mascota_id=mascota).delete()
+        
+        # PASO 2: Verificar si el cliente tiene otras mascotas
+        otras_mascotas = Mascota.objects.filter(cliente_id=cliente).exclude(id_mascota=mascota_id).count()
+        
+        # PASO 3: Eliminar la mascota (sin usar CASCADE automático)
+        # Guardamos info antes de eliminar
+        nombre_mascota = mascota.nombre
+        
+        # Eliminamos manualmente la mascota para evitar CASCADE a tablas inexistentes
+        mascota_eliminada = mascota.delete()
+        
+        # PASO 4: Si el cliente no tiene más mascotas, eliminarlo también
+        if otras_mascotas == 0:
+            cliente.delete()
+            mensaje = f"✅ Cliente, mascota '{nombre_mascota}' y citas asociadas eliminados correctamente"
+        else:
+            mensaje = f"✅ Mascota '{nombre_mascota}' y citas eliminadas. El cliente tiene {otras_mascotas} mascota(s) más registrada(s)"
+        
+        return JsonResponse({
+            "status": "ok", 
+            "message": mensaje,
+            "citas_eliminadas": citas_eliminadas[0] if citas_eliminadas[0] > 0 else 0
+        })
+    
+    except Mascota.DoesNotExist:
+        return JsonResponse({"status": "error", "message": "Mascota no encontrada"}, status=404)
+    except Exception as e:
+        # Capturamos cualquier error de BD y lo reportamos de manera amigable
+        error_msg = str(e)
+        if "doesn't exist" in error_msg or "no existe" in error_msg:
+            return JsonResponse({
+                "status": "error", 
+                "message": "Error: Existe una referencia a una tabla que no está disponible. Contacta al administrador."
+            }, status=500)
+        return JsonResponse({"status": "error", "message": f"Error al eliminar: {error_msg}"}, status=500)
