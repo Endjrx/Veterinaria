@@ -54,44 +54,83 @@ def api_mascotas(request):
 
 def registrar_cliente(request):
     if request.method == "POST":
+        try:
+            # 1. Obtener datos CLIENTE
+            nombre = request.POST.get("nombre")
+            apellido = request.POST.get("apellido")
+            direccion = request.POST.get("direccion")
+            email = request.POST.get("email")
+            telefono = request.POST.get("telefono")
 
-        # 1. Obtener datos CLIENTE
-        nombre = request.POST.get("nombre")
-        apellido = request.POST.get("apellido")
-        direccion = request.POST.get("direccion")
-        email = request.POST.get("email")
-        telefono = request.POST.get("telefono")
+            # 2. Obtener datos MASCOTA
+            nombreMascota = request.POST.get("nombreMascota")
+            especie = request.POST.get("especie")
+            raza = request.POST.get("raza")
+            edad = request.POST.get("edad")
+            peso = request.POST.get("peso")
 
-        # Crear cliente
-        cliente = Cliente.objects.create(
-            nombre=nombre,
-            apellido=apellido,
-            direccion=direccion,
-            email=email,
-            telefono=telefono
-        )
+            # ✅ VALIDACIÓN: Verificar que edad y peso no sean negativos
+            try:
+                edad_int = int(edad)
+                peso_float = float(peso)
+                
+                if edad_int < 0:
+                    return JsonResponse({
+                        "status": "error", 
+                        "message": "La edad no puede ser negativa"
+                    }, status=400)
+                
+                if peso_float < 0:
+                    return JsonResponse({
+                        "status": "error", 
+                        "message": "El peso no puede ser negativo"
+                    }, status=400)
+                
+                # Validación adicional: valores razonables
+                if edad_int > 50:
+                    return JsonResponse({
+                        "status": "error", 
+                        "message": "La edad parece demasiado alta. Por favor verifica."
+                    }, status=400)
+                
+                if peso_float > 500:
+                    return JsonResponse({
+                        "status": "error", 
+                        "message": "El peso parece demasiado alto. Por favor verifica."
+                    }, status=400)
+                    
+            except (ValueError, TypeError):
+                return JsonResponse({
+                    "status": "error", 
+                    "message": "Edad o peso no válidos. Deben ser números."
+                }, status=400)
 
-        # 2. Obtener datos MASCOTA
-        nombreMascota = request.POST.get("nombreMascota")
-        especie = request.POST.get("especie")
-        raza = request.POST.get("raza")
-        edad = request.POST.get("edad")
-        peso = request.POST.get("peso")
+            # Crear cliente
+            cliente = Cliente.objects.create(
+                nombre=nombre,
+                apellido=apellido,
+                direccion=direccion,
+                email=email,
+                telefono=telefono
+            )
 
-        Mascota.objects.create(
-            nombre=nombreMascota,
-            especie=especie,
-            raza=raza,
-            edad=edad,
-            peso=peso,
-            cliente_id=cliente
-        )
+            # Crear mascota
+            Mascota.objects.create(
+                nombre=nombreMascota,
+                especie=especie,
+                raza=raza,
+                edad=edad_int,
+                peso=peso_float,
+                cliente_id=cliente
+            )
 
-        # 3. Respuesta JSON
-        return JsonResponse({"status": "ok", "message": "Registro creado correctamente"})
+            # 3. Respuesta JSON
+            return JsonResponse({"status": "ok", "message": "Registro creado correctamente"})
+        
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": f"Error al registrar: {str(e)}"}, status=500)
 
-    return JsonResponse({"status": "error", "message": "Método no permitido"}, status=400)  
-
+    return JsonResponse({"status": "error", "message": "Método no permitido"}, status=400)
 
 
 
@@ -205,6 +244,46 @@ def editar_registro(request):
             cliente_id = request.POST.get("clienteId")
             mascota_id = request.POST.get("mascotaId")
             
+            # Obtener datos de mascota
+            edad = request.POST.get("edad")
+            peso = request.POST.get("peso")
+            
+            # ✅ VALIDACIÓN: Verificar que edad y peso no sean negativos
+            try:
+                edad_int = int(edad)
+                peso_float = float(peso)
+                
+                if edad_int < 0:
+                    return JsonResponse({
+                        "status": "error", 
+                        "message": "La edad no puede ser negativa"
+                    }, status=400)
+                
+                if peso_float < 0:
+                    return JsonResponse({
+                        "status": "error", 
+                        "message": "El peso no puede ser negativo"
+                    }, status=400)
+                
+                # Validación adicional: valores razonables
+                if edad_int > 50:
+                    return JsonResponse({
+                        "status": "error", 
+                        "message": "La edad parece demasiado alta. Por favor verifica."
+                    }, status=400)
+                
+                if peso_float > 500:
+                    return JsonResponse({
+                        "status": "error", 
+                        "message": "El peso parece demasiado alto. Por favor verifica."
+                    }, status=400)
+                    
+            except (ValueError, TypeError):
+                return JsonResponse({
+                    "status": "error", 
+                    "message": "Edad o peso no válidos. Deben ser números."
+                }, status=400)
+            
             # Obtener objetos
             cliente = Cliente.objects.get(id_cliente=cliente_id)
             mascota = Mascota.objects.get(id_mascota=mascota_id)
@@ -221,8 +300,8 @@ def editar_registro(request):
             mascota.nombre = request.POST.get("nombreMascota")
             mascota.especie = request.POST.get("especie")
             mascota.raza = request.POST.get("raza")
-            mascota.edad = request.POST.get("edad")
-            mascota.peso = request.POST.get("peso")
+            mascota.edad = edad_int
+            mascota.peso = peso_float
             mascota.save()
             
             return JsonResponse({"status": "ok", "message": "Registro actualizado correctamente"})
@@ -553,22 +632,33 @@ def registrar_factura(request):
             administrador_id = request.POST.get("administrador_id")
             cliente_id = request.POST.get("cliente_id")
             
+            # ✅ VALIDACIÓN: Verificar que el monto sea válido y positivo
+            try:
+                monto_decimal = Decimal(monto_total)
+                if monto_decimal < 0:
+                    return JsonResponse({
+                        "status": "error", 
+                        "message": "El monto no puede ser negativo"
+                    }, status=400)
+            except (ValueError, TypeError, InvalidOperation):
+                return JsonResponse({
+                    "status": "error", 
+                    "message": "El monto ingresado no es válido"
+                }, status=400)
+            
             # Obtener objetos relacionados
             cita = Cita.objects.get(id_cita=cita_id)
-
-            # CAMBIO: usar tabla auth_user
             User = get_user_model()
             administrador = User.objects.get(pk=administrador_id)
-
             cliente = Cliente.objects.get(id_cliente=cliente_id)
             
             # Crear factura
             Factura.objects.create(
                 fecha_emision=fecha_emision,
-                monto_total=monto_total,
+                monto_total=monto_decimal,  # Usar el Decimal validado
                 estado_pago=estado_pago,
                 cita_id=cita,
-                administrador_id=administrador,  # ← ya no usa tu Modelo Administrador
+                administrador_id=administrador,
                 cliente_id=cliente
             )
             
