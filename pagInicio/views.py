@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from empl_veterinario.models import Veterinario
 from django.views.decorators.http import require_http_methods
 import json
+from django.contrib.auth import get_user_model
 
 
 @login_required(login_url='home-login')
@@ -498,7 +499,7 @@ def api_listar_facturas(request):
             "monto": float(f.monto_total),
             "estado": f.estado_pago,
             "cita_motivo": f.cita_id.motivo,
-            "administrador": f"{f.administrador_id.id_administrador.nombre}"
+            "administrador": f"{f.administrador_id.first_name}"
         })
     
     return JsonResponse({"status": "ok", "facturas": data})
@@ -529,7 +530,7 @@ def api_detalle_factura(request, factura_id):
             "mascota_nombre": factura.cita_id.mascota_id.nombre,
             
             # Info del administrador
-            "administrador": f"{factura.administrador_id.id_administrador.nombre}"
+            "administrador": f"{factura.administrador_id.first_name}"
         }
         
         return JsonResponse({"status": "ok", "detalle": detalle})
@@ -538,7 +539,7 @@ def api_detalle_factura(request, factura_id):
         return JsonResponse({"status": "error", "message": "Factura no encontrada"}, status=404)
 
 
-# API: Registrar nueva factura
+
 def registrar_factura(request):
     """Crea una nueva factura"""
     if request.method == "POST":
@@ -552,7 +553,11 @@ def registrar_factura(request):
             
             # Obtener objetos relacionados
             cita = Cita.objects.get(id_cita=cita_id)
-            administrador = Administrador.objects.get(id_administrador=administrador_id)
+
+            # CAMBIO: usar tabla auth_user
+            User = get_user_model()
+            administrador = User.objects.get(pk=administrador_id)
+
             cliente = Cliente.objects.get(id_cliente=cliente_id)
             
             # Crear factura
@@ -561,13 +566,13 @@ def registrar_factura(request):
                 monto_total=monto_total,
                 estado_pago=estado_pago,
                 cita_id=cita,
-                administrador_id=administrador,
+                administrador_id=administrador,  # ← ya no usa tu Modelo Administrador
                 cliente_id=cliente
             )
             
             return JsonResponse({"status": "ok", "message": "Factura registrada correctamente"})
         
-        except (Cita.DoesNotExist, Administrador.DoesNotExist, Cliente.DoesNotExist) as e:
+        except (Cita.DoesNotExist, User.DoesNotExist, Cliente.DoesNotExist):
             return JsonResponse({"status": "error", "message": "Datos relacionados no encontrados"}, status=404)
         except Exception as e:
             return JsonResponse({"status": "error", "message": str(e)}, status=500)
@@ -600,8 +605,9 @@ def actualizar_estado_factura(request):
 # API: Cargar datos para formulario de factura (citas y clientes)
 def api_datos_factura(request):
     """Devuelve citas y administradores disponibles para crear facturas"""
-    
-    # Citas sin factura (opcional: agregar filtro)
+    User = get_user_model()
+
+    # Citas (puedes añadir un filtro para "sin factura" si tienes ese campo)
     citas = Cita.objects.select_related('mascota_id', 'mascota_id__cliente_id').all()
     citas_data = []
     for c in citas:
@@ -613,16 +619,19 @@ def api_datos_factura(request):
             "cliente_nombre": f"{c.mascota_id.cliente_id.nombre} {c.mascota_id.cliente_id.apellido}",
             "mascota": c.mascota_id.nombre
         })
-    
-    # Administradores
-    admins = Administrador.objects.select_related('id_administrador').all()
+
+    # Administradores -> ahora tomados desde el modelo User de Django
+    admins_qs = User.objects.filter(is_staff=True, is_active=True).order_by('first_name', 'last_name')
     admins_data = []
-    for a in admins:
+    for u in admins_qs:
+        full_name = f"{u.first_name} {u.last_name}".strip()
+        if not full_name:
+            full_name = getattr(u, 'username', str(u.pk))  # fallback
         admins_data.append({
-            "id": a.id_administrador.pk,
-            "nombre": f"{a.id_administrador.nombre} {a.id_administrador.apellido}"
+            "id": u.pk,
+            "nombre": full_name
         })
-    
+
     return JsonResponse({
         "status": "ok",
         "citas": citas_data,
