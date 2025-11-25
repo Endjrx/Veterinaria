@@ -639,7 +639,8 @@ reportes: `
                     <div class="form-group">
                         <label>Monto Total <span class="required">*</span></label>
                         <input type="number" id="montoTotal" name="monto_total" 
-                               min="0" step="0.01" required placeholder="0.00">
+                            min="0.01" step="0.01" required placeholder="0.00"
+                            oninput="this.value = Math.abs(this.value)">
                     </div>
                 </div>
 
@@ -978,6 +979,39 @@ async function editarRegistro(mascotaId) {
 }
 
 async function guardarEdicion() {
+    
+    // ✅ VALIDACIÓN FRONTEND: Verificar edad y peso antes de enviar
+    const edad = document.getElementById("editEdad").value;
+    const peso = document.getElementById("editPeso").value;
+    
+    if (parseFloat(edad) < 0) {
+        alert('❌ La edad no puede ser negativa');
+        document.getElementById("editEdad").focus();
+        return;
+    }
+    
+    if (parseFloat(peso) < 0) {
+        alert('❌ El peso no puede ser negativo');
+        document.getElementById("editPeso").focus();
+        return;
+    }
+    
+    if (parseFloat(edad) > 50) {
+        const confirmar = confirm('⚠️ La edad parece muy alta (mayor a 50 años). ¿Deseas continuar?');
+        if (!confirmar) {
+            document.getElementById("editEdad").focus();
+            return;
+        }
+    }
+    
+    if (parseFloat(peso) > 500) {
+        const confirmar = confirm('⚠️ El peso parece muy alto (mayor a 500 kg). ¿Deseas continuar?');
+        if (!confirmar) {
+            document.getElementById("editPeso").focus();
+            return;
+        }
+    }
+    
     const form = document.getElementById("formEditar");
     const formData = new FormData(form);
     const csrf = getCookie("csrftoken");
@@ -996,7 +1030,7 @@ async function guardarEdicion() {
         if (data.status === "ok") {
             alert("✅ Registro actualizado correctamente");
             cerrarModal("modalEditar");
-            cargarMascotas(); // Recargar tabla
+            cargarMascotas();
         } else {
             alert("❌ Error: " + data.message);
         }
@@ -1005,9 +1039,6 @@ async function guardarEdicion() {
         alert("❌ Error al guardar los cambios");
     }
 }
-
-
-
 
 // ============================================
 // 🗑️ FUNCIONALIDAD ELIMINAR (EN CASCADA)
@@ -1100,9 +1131,44 @@ function getCookie(name) {
 }
 
 /** Funcion que se va a encargar para la logica de la session registrar clientes, se encarga de recibir  */
-function registrarFuncionalidad () {
+function registrarFuncionalidad() {
+    
+    // ✅ Activar validación en tiempo real
+    validarCamposNumericos();
     
     document.getElementById("btnRegistrar").addEventListener("click", async function () {
+        
+        // ✅ VALIDACIÓN FRONTEND: Verificar edad y peso antes de enviar
+        const edad = document.getElementById("edad").value;
+        const peso = document.getElementById("peso").value;
+        
+        if (parseFloat(edad) < 0) {
+            mostrarAlerta('error', '❌ La edad no puede ser negativa');
+            document.getElementById("edad").focus();
+            return;
+        }
+        
+        if (parseFloat(peso) < 0) {
+            mostrarAlerta('error', '❌ El peso no puede ser negativo');
+            document.getElementById("peso").focus();
+            return;
+        }
+        
+        if (parseFloat(edad) > 50) {
+            const confirmar = confirm('⚠️ La edad parece muy alta (mayor a 50 años). ¿Deseas continuar?');
+            if (!confirmar) {
+                document.getElementById("edad").focus();
+                return;
+            }
+        }
+        
+        if (parseFloat(peso) > 500) {
+            const confirmar = confirm('⚠️ El peso parece muy alto (mayor a 500 kg). ¿Deseas continuar?');
+            if (!confirmar) {
+                document.getElementById("peso").focus();
+                return;
+            }
+        }
 
         const form = document.getElementById("formRegistrarCliente");
         const formData = new FormData(form);
@@ -1110,33 +1176,29 @@ function registrarFuncionalidad () {
         // CSRF
         const csrf = getCookie("csrftoken");
 
-        const response = await fetch("/inicio/api/registrar/cliente-mascota/", {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": csrf,
-            },
-            body: formData
-        });
+        try {
+            const response = await fetch("/inicio/api/registrar/cliente-mascota/", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrf,
+                },
+                body: formData
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        if (data.status === "ok") {
-            alert("Registro creado exitosamente");
-
-            // Opcional: resetear formulario
-            form.reset();
-
-            // Opcional: actualizar tu tabla dinámica
-            // cargarClientes(); // si tienes esta función
-        } else {
-            alert("Error: " + data.message);
+            if (data.status === "ok") {
+                alert("✅ Registro creado exitosamente");
+                form.reset();
+            } else {
+                alert("❌ Error: " + data.message);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("❌ Error al registrar. Por favor intenta nuevamente.");
         }
     });
-
-
 }
-
-
 
 
 
@@ -1762,8 +1824,30 @@ function cerrarModalNuevaFactura() {
     document.getElementById("modalNuevaFactura").style.display = "none";
 }
 
+// ============================================
+// GUARDAR FACTURA CON VALIDACIÓN
+// ============================================
 async function guardarFactura() {
     const form = document.getElementById("formNuevaFactura");
+    
+    // ✅ VALIDACIÓN: Verificar que el monto no sea negativo
+    const montoInput = document.getElementById("montoTotal");
+    const monto = parseFloat(montoInput.value);
+    
+    if (isNaN(monto) || monto < 0) {
+        alert("❌ Error: El monto no puede ser negativo");
+        montoInput.focus();
+        return;
+    }
+    
+    if (monto === 0) {
+        const confirmacion = confirm("⚠️ El monto es $0.00. ¿Deseas continuar?");
+        if (!confirmacion) {
+            montoInput.focus();
+            return;
+        }
+    }
+    
     const formData = new FormData(form);
     const csrf = getCookie("csrftoken");
     
@@ -1864,4 +1948,49 @@ async function cargarCitasMascota(mascotaId) {
         const selector = document.getElementById("citaTratamiento");
         selector.innerHTML = '<option value="">Error al cargar citas</option>';
     }
+}
+
+
+
+
+function validarCamposNumericos() {
+    // Seleccionar todos los inputs de edad y peso
+    const camposNumericos = document.querySelectorAll('input[type="number"]');
+    
+    camposNumericos.forEach(input => {
+        // Prevenir valores negativos al escribir
+        input.addEventListener('input', function() {
+            if (this.value < 0) {
+                this.value = 0;
+                mostrarAlerta('warning', '⚠️ No se permiten valores negativos');
+            }
+        });
+        
+        // Prevenir pegar valores negativos
+        input.addEventListener('paste', function(e) {
+            setTimeout(() => {
+                if (this.value < 0) {
+                    this.value = 0;
+                    mostrarAlerta('warning', '⚠️ No se permiten valores negativos');
+                }
+            }, 10);
+        });
+    });
+}
+
+/**
+ * Muestra alertas en el formulario
+ */
+function mostrarAlerta(tipo, mensaje) {
+    const alertBox = document.getElementById('alertBox');
+    if (!alertBox) return;
+    
+    alertBox.className = `alert alert-${tipo}`;
+    alertBox.textContent = mensaje;
+    alertBox.style.display = 'block';
+    
+    // Ocultar después de 3 segundos
+    setTimeout(() => {
+        alertBox.style.display = 'none';
+    }, 3000);
 }
