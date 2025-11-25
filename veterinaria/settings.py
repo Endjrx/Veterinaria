@@ -86,10 +86,10 @@ WSGI_APPLICATION = 'veterinaria.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',   # 🔹 Motor de base de datos
-        'NAME': 'veterinaria',                # 🔹 Nombre de la base que creaste
-        'USER': 'Endys',                        # 🔹 Usuario de MySQL
-        'PASSWORD': 'Endys12345#',      # 🔹 Contraseña de MySQL
-        'HOST': '72.61.11.232',                   # 🔹 Servidor local
+        'NAME': 'u295611864_veterinaria',                # 🔹 Nombre de la base que creaste
+        'USER': 'u295611864_Endjrx',                        # 🔹 Usuario de MySQL
+        'PASSWORD': 'Endjrx1124009262#',      # 🔹 Contraseña de MySQL
+        'HOST': '82.197.82.177',                   # 🔹 Servidor local
         'PORT': '3306',                        # 🔹 Puerto por defecto de MySQL
         'OPTIONS': {
             'charset': 'utf8mb4',
