@@ -29,4 +29,6 @@ urlpatterns = [
     path("api/registrar-factura/", views.registrar_factura, name="registrar_factura"),
     path("api/actualizar-estado-factura/", views.actualizar_estado_factura, name="actualizar_estado_factura"),
     path("api/datos-factura/", views.api_datos_factura, name="api_datos_factura"),
+
+    path('api/citas-mascota/<int:mascota_id>/', views.citas_mascota, name='citas_mascota'),
 ]

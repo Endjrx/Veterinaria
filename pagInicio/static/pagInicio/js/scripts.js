@@ -1830,3 +1830,38 @@ async function actualizarEstadoFactura() {
         alert("❌ Error al actualizar el estado");
     }
 }
+
+
+
+// Cargar citas de la mascota para el selector de tratamiento
+async function cargarCitasMascota(mascotaId) {
+    try {
+        const selector = document.getElementById("citaTratamiento");
+        selector.innerHTML = '<option value="">Cargando citas...</option>';
+        
+        // Llamar a la API para obtener las citas de esta mascota
+        const response = await fetch(`/inicio/api/citas-mascota/${mascotaId}/`);
+        const data = await response.json();
+        
+        selector.innerHTML = '<option value="">Seleccione una cita...</option>';
+        
+        if (data.status === "ok" && data.citas.length > 0) {
+            data.citas.forEach(cita => {
+                const option = document.createElement("option");
+                option.value = cita.id;
+                option.textContent = `${cita.fecha} - ${cita.motivo} (${cita.veterinario})`;
+                selector.appendChild(option);
+            });
+        } else {
+            const option = document.createElement("option");
+            option.value = "";
+            option.textContent = "No hay citas registradas para esta mascota";
+            option.disabled = true;
+            selector.appendChild(option);
+        }
+    } catch (error) {
+        console.error("Error al cargar citas:", error);
+        const selector = document.getElementById("citaTratamiento");
+        selector.innerHTML = '<option value="">Error al cargar citas</option>';
+    }
+}

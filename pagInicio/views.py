@@ -11,6 +11,8 @@ import json
 from django.contrib.auth import get_user_model
 
 
+
+
 @login_required(login_url='home-login')
 def home(request):
 
@@ -637,3 +639,47 @@ def api_datos_factura(request):
         "citas": citas_data,
         "administradores": admins_data
     })
+
+
+
+
+@require_http_methods(["GET"])
+def citas_mascota(request, mascota_id):
+    try:
+        # Obtener la mascota primero
+        mascota = Mascota.objects.get(id_mascota=mascota_id)
+        
+        # Obtener todas las citas de la mascota (CORREGIDO: usar mascota_id en lugar de id_mascota)
+        citas = Cita.objects.filter(
+            mascota_id=mascota  # Usamos el objeto mascota directamente
+        ).select_related('veterinario_id').order_by('-fecha')
+        
+        citas_data = []
+        for cita in citas:
+            # Obtener el nombre completo del veterinario
+            veterinario_nombre = f"{cita.veterinario_id.id_veterinario.nombre} {cita.veterinario_id.id_veterinario.apellido}"
+            
+            citas_data.append({
+                'id': cita.id_cita,
+                'fecha': cita.fecha.strftime('%Y-%m-%d'),
+                'hora': cita.hora.strftime('%H:%M') if cita.hora else '',
+                'motivo': cita.motivo,
+                'veterinario': veterinario_nombre,
+                'estado': cita.estado
+            })
+        
+        return JsonResponse({
+            'status': 'ok',
+            'citas': citas_data
+        })
+        
+    except Mascota.DoesNotExist:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Mascota no encontrada'
+        }, status=404)
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=400)
