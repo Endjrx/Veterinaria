@@ -243,6 +243,7 @@ const secciones = {
 
 // 🔥 Cargar el Dashboard al iniciar
 contenedor.innerHTML = dashboard_template;
+inicializarDashboard ();
 
 // Evento para cada botón del menú
 botones.forEach(boton => {
@@ -259,6 +260,7 @@ botones.forEach(boton => {
 
         // 4. Actualizar contenido
         contenedor.innerHTML = secciones[section];
+        if (section == "dashboard") inicializarDashboard ();
         if (section === "registrar") registrarFuncionalidad ();
         if (section === "agendar") {
             cargarSelects();
@@ -271,6 +273,29 @@ botones.forEach(boton => {
         }
     });
 });
+
+
+
+
+
+
+
+
+
+function inicializarDashboard() {
+    const btnConsultar = document.getElementById("btnConsultar");
+
+    btnConsultar.addEventListener("click", () => {
+        contenedor.innerHTML = secciones["consultar"];
+        configurarBuscador();
+        cargarMascotas();
+    });
+}
+
+
+
+
+
 
 
 
