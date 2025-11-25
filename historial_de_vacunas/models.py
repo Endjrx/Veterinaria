@@ -11,4 +11,4 @@ class Historial_de_Vacunas(models.Model):
     mascota_id = models.ForeignKey(Mascota, on_delete=models.CASCADE, db_column='mascota_id')
 
     class Meta:
-        db_table = 'historial_de_Vacunas'
+        db_table = 'historial_de_vacunas'
